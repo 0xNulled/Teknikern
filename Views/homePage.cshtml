@@ -1,0 +1,52 @@
+﻿@using Umbraco.Cms.Core.Models
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    Layout = null;
+    var newsArticles = Model.Children();
+}
+<!doctype html>
+<html lang="sv">
+
+<head>
+    <meta charset="utf-8">
+    <title>@Model.Name</title>
+</head>
+
+<body>
+
+    <h1 style="text-align: center; margin-bottom: 40px;">@Model.Name</h1>
+
+    <div class="news-list">
+        @foreach (var article in newsArticles)
+        {
+            var image = article.Value<MediaWithCrops>("imagePicker");
+            var textArea = article.Value<string>("textArea");
+
+            <div class="news-card">
+                @if (image != null)
+                {
+                    <img src="@image.Url()" alt="@article.Name" />
+                }
+                <div>
+                    <h2><a href="@article.Url()">@article.Name</a></h2>
+                    @if (!string.IsNullOrWhiteSpace(textArea))
+                    {
+                        <p>@textArea</p>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+
+</body>
+
+</html>
+
+<style>
+    .news-card {
+        border-style: solid;
+        border-width: 1px;
+        border-color: black;
+        padding: 10px;
+    }
+</style>
