@@ -3,10 +3,32 @@
 Homepage-Nyheter/
 - Blog/
 - About us/
-- - Jobbpositioner
+  - Jobbpositioner
+  - Kontakta oss
   - Information
   - Privacy Policy
-- {Nyhetskategorier}/
+  - Tipsa oss
+- {Nyhetskategorier}/ //Hårdvara, AI, Mjukvara, Cyber-Säkerhet, Framtiden, Spel
+- (optional) Merch
 - Nyhet/
-- - (optional) RSS
+  - (optional) RSS
+- Betal/bli medlem
+
+
+
+Taggar:
+- FOSS
+- Europa
+- America
+- 
+
+
+
+Roller
+- Redaktör
+- Skribent
+- Admin
+- Super Admin
+- Blog gäst
+- 
   
