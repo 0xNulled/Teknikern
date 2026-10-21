@@ -1,0 +1,25 @@
+{
+  "name": "teknikern",
+  "version": "1.0.0",
+  "description": "Homepage-Nyheter/\r - Blog/\r - About us/\r   - Jobbpositioner\r   - Kontakta oss\r   - Information\r   - Privacy Policy\r   - Tipsa oss\r - {Nyhetskategorier}/ //Hårdvara, AI, Mjukvara, Cyber-Säkerhet, Framtiden, Spel\r - (optional) Merch\r - Nyhet/\r   - (optional) RSS\r - Betal/bli medlem",
+  "main": "index.js",
+  "scripts": {
+    "build": "sass --no-source-map scss:wwwroot/css",
+    "watch": "sass --no-source-map --watch scss:wwwroot/css"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/0xNulled/Teknikern.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/0xNulled/Teknikern/issues"
+  },
+  "homepage": "https://github.com/0xNulled/Teknikern#readme",
+  "dependencies": {
+    "sass": "^1.106.0"
+  }
+}
