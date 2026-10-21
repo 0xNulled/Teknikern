@@ -32,3 +32,9 @@ Roller
 - Blog gäst
 - 
   
+
+ styling med Sass
+
+- första gången: npm install
+- Vid arbete: npm run watch (kompilerar när du sparar)
+- kör din styling i scss mappen. kompilerar automatiskt och skickas till wwwroot\css
