@@ -37,7 +37,7 @@
         {
             var thumbnail = article.Value<MediaWithCrops>("thumbnail");
             var title = article.Value<string>("title");
-            var excerpt = StripAndTruncate(article.Value<IHtmlEncodedString>("breadtext")?.ToString() ?? string.Empty);
+            var excerpt = StripAndTruncate(article.Value<IHtmlContent>("breadtext")?.ToString() ?? string.Empty);
             var author = article.Value<IEnumerable<IPublishedContent>>("authors")?.FirstOrDefault();
             var subjects = article.Value<IEnumerable<IPublishedContent>>("subjectTags") ?? Enumerable.Empty<IPublishedContent>();
 
@@ -52,7 +52,7 @@
                         <div class="news-card__tags">
                             @foreach (var subject in subjects)
                             {
-                                <span class="tag">@subject.Value<string>("subject")</span>
+                                <span class="tag">@(subject.Value<string>("subject"))</span>
                             }
                         </div>
                     }
@@ -63,7 +63,7 @@
                     }
                     @if (author != null)
                     {
-                        <span class="news-card__author">Av @author.Value<string>("fullName")</span>
+                        <span class="news-card__author">Av @(author.Value<string>("fullName"))</span>
                     }
                 </div>
             </a>
@@ -73,4 +73,3 @@
 </body>
 
 </html>
-

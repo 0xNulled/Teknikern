@@ -31,3 +31,61 @@ body a:hover {
 body a:active {
   color: #adad1f;
 }
+body .news-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 25px;
+  margin: 25px;
+}
+body .news-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #fff;
+  overflow: hidden;
+  transition: border-color 0.2s ease;
+}
+body .news-card:hover {
+  border-color: #e0e052;
+  text-decoration: none;
+}
+body .news-card:hover h2 {
+  color: #e0e052;
+}
+body .news-card img {
+  margin: 0;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+}
+body .news-card__body {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+body .news-card__tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+body .news-card h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+body .news-card p {
+  margin: 0;
+  font-size: 0.9rem;
+  opacity: 0.85;
+}
+body .news-card__author {
+  font-size: 0.8rem;
+  color: #adad1f;
+}
+body .tag {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 1px solid #e0e052;
+  color: #e0e052;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
