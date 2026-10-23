@@ -1,8 +1,29 @@
 ﻿@using Umbraco.Cms.Core.Models
+@using Umbraco.Cms.Core.Models.PublishedContent
+@using System.Linq
+@using System.Text.RegularExpressions
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
 @{
     Layout = null;
-    var newsArticles = Model.Children();
+
+    var articles = Model.Children()
+        .Where(c => c.ContentType.Alias == "newsArticle")
+        .OrderByDescending(c => c.CreateDate);
+
+    string StripAndTruncate(string html, int maxLength = 140)
+    {
+        if (string.IsNullOrWhiteSpace(html)) return string.Empty;
+
+        //artikelns breadtext är Rich vilket renderas med html taggar
+        var text = Regex.Replace(html, "<.*?>", string.Empty).Trim();
+
+        if (text.Length >= maxLength)
+        {
+            text = text.Substring(0, maxLength).TrimEnd() + "...";
+        }
+
+        return text;
+    }
 }
 <!doctype html>
 <html lang="sv">
@@ -18,28 +39,47 @@
     <h1 style="text-align: center; margin-bottom: 40px;">@Model.Name</h1>
 
     <div class="news-list">
-        @foreach (var article in newsArticles)
+        @foreach (var article in articles)
         {
-            var image = article.Value<MediaWithCrops>("imagePicker");
-            var textArea = article.Value<string>("textArea");
+            var thumbnail = article.Value<MediaWithCrops>("thumbnail");
+            var title = article.Value<string>("title");
+            var excerpt = StripAndTruncate(article.Value("breadtext")?.ToString() ?? string.Empty);
+            var authors = article.Value<IEnumerable<IPublishedContent>>("authors") ?? Enumerable.Empty<IPublishedContent>();
+            var subjects = article.Value<IEnumerable<IPublishedContent>>("subjectTags") ?? Enumerable.Empty<IPublishedContent>();
 
-            <div class="news-card">
-                @if (image != null)
+            <a class="news-card" href="@article.Url()">
+                @if (thumbnail != null)
                 {
-                    <img src="@image.Url()" alt="@article.Name" />
+                    <img src="@thumbnail.Url()" alt="@title" />
                 }
-                <div>
-                    <h2><a href="@article.Url()">@article.Name</a></h2>
-                    @if (!string.IsNullOrWhiteSpace(textArea))
+
+                <div class="news-card__body">
+                    @if (subjects.Any())
                     {
-                        <p>@textArea</p>
+                        <div class="news-card__tags">
+                            @foreach (var subject in subjects)
+                            {
+                                <span class="tag">@(subject.Value<string>("subject"))</span>
+                            }
+                        </div>
                     }
+
+                    <h2>@title</h2>
+
+                    @if (!string.IsNullOrWhiteSpace(excerpt))
+                    {
+                        <p>@excerpt</p>
+                    }
+
+                    <span class="news-card__author"> Skriven av: 
+                        @string.Join(", ", authors.Select(author => author.Value<string>("fullName")))
+                    </span>
+
                 </div>
-            </div>
+            </a>
         }
     </div>
 
 </body>
 
 </html>
-

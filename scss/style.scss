@@ -44,4 +44,73 @@ body{
     a:active {
     color: $damped-accent-color;
     }
+
+    .news-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 25px;
+        margin: 25px;
+    }
+
+    .news-card {
+        display: flex;
+        flex-direction: column;
+        border: 1px solid $text-color;
+        overflow: hidden;
+        transition: border-color 0.2s ease;
+
+        &:hover {
+            border-color: $accent-color;
+            text-decoration: none;
+
+            h2 {
+                color: $accent-color;
+            }
+        }
+
+        img {
+            margin: 0;
+            aspect-ratio: 16 / 9;
+            object-fit: cover;
+        }
+
+        &__body {
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        &__tags {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        h2 {
+            margin: 0;
+            font-size: 1.1rem;
+        }
+
+        p {
+            margin: 0;
+            font-size: 0.9rem;
+            opacity: 0.85;
+        }
+
+        &__author {
+            font-size: 0.8rem;
+            color: $damped-accent-color;
+        }
+    }
+
+    .tag {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        border: 1px solid $accent-color;
+        color: $accent-color;
+        padding: 2px 8px;
+        border-radius: 999px;
+    }
     }
