@@ -4,23 +4,43 @@
 @{
 	Layout = null;
 	var picture = Model.Value<IPublishedContent>("picture");
+	var authorsFolder = Model.Value<IPublishedContent>("authorsFolder");
 }
 <!DOCTYPE html>
 <html lang="sv">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-	<h1>@Model.Value("title")</h1>
-
-    <p>@Model.Value("textin")</p>
-
+	<article style = "max-width: 700px; margin-left: auto; margin-right: auto;">
+		<h1 style="text-align: center;">@Model.Value("title")</h1>
+		<p style ="text-align: center;">@Model.Value("textin")
+		</p>
+	</article>
 	@{
 		if (picture != null)
 		{
 			<img src="@picture.Url()"/>
 		}
 	}
+
+	@{
+			foreach (var author in authorsFolder.Children())
+			{
+				var headshot = author.Value<IPublishedContent>("headshot");
+					if (headshot != null)
+					{
+						<img src="@headshot.Url()" style="width: 100px; height: 100px; object-fit: cover;"/> 
+					}
+			}
+		}
+
+
+
+
+
+
 </body>
 </html>
