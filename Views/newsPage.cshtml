@@ -1,0 +1,15 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    Layout = "~/Views/Master.cshtml";
+
+    var articles = Model.Children()
+        .Where(c => c.ContentType.Alias == "newsArticle")
+        .OrderByDescending(c => c.CreateDate);
+}
+
+<div class="news-list">
+    @foreach (var article in articles)
+    {
+        @await Html.PartialAsync("newsThumbnail", article)
+    }
+</div>
