@@ -1,34 +1,20 @@
-﻿@using Umbraco.Cms.Web.Common.PublishedModels;
-@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContentModels.NewsArticle>
-@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
 @{
-	Layout = null;
+	Layout = "~/Views/Master.cshtml";
 }
-<!doctype html>
-<html lang="sv">
 
-<head>
-    <meta charset="utf-8">
-    <title>@Model.Name</title>
-    <link rel="stylesheet" href="/css/style.css">
-</head>
-
-<body>
-
-    <h1 style="text-align: center; margin-bottom: 40px;">@Model.Name</h1>
+<div class="news-article">
+	<h1 style="text-align: center; margin-bottom: 40px;">@Model.Name</h1>
 
 	@{
 		var image = Model.Value<Umbraco.Cms.Core.Models.PublishedContent.IPublishedContent>("thumbnail");
 	}
-	@if (image != null){
-		<img src="@image.Url()">
+	@if (image != null)
+	{
+		<img src="@image.Url()" alt="@Model.Name" />
 	}
-
-	
 
 	<article>
 		@Model.Value("breadtext")
 	</article>
-	
-</body>
-</html>
+</div>
