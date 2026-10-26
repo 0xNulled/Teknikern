@@ -6,12 +6,11 @@ $accent-color: #e0e052;
 $damped-accent-color: #adad1f;
 
 
-body{ 
+body {
     font-family: "Maple Mono", monospace;
     font-weight: 400;
     font-style: normal;
-    
-    background: $background-color; 
+    background: $background-color;
     color: $text-color;
 
     img {
@@ -28,7 +27,6 @@ body{
         border-color: $text-color;
         padding: 15px;
         margin: 25px;
-        
     }
 
     a {
@@ -42,7 +40,7 @@ body{
     }
 
     a:active {
-    color: $damped-accent-color;
+        color: $damped-accent-color;
     }
 
     .news-list {
@@ -92,10 +90,15 @@ body{
             font-size: 1.1rem;
         }
 
-        p {
+        &__excerpt {
             margin: 0;
             font-size: 0.9rem;
             opacity: 0.85;
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         &__author {
@@ -113,4 +116,4 @@ body{
         padding: 2px 8px;
         border-radius: 999px;
     }
-    }
+}

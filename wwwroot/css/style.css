@@ -1,17 +1,10 @@
 @using "@fontsource/maple-mono";
-
-html, body {
-  height: 100%;
-  margin: 0;
-}
 body {
   font-family: "Maple Mono", monospace;
   font-weight: 400;
   font-style: normal;
   background: #000;
   color: #fff;
-  display: flex;
-  flex-direction: column;
 }
 body img {
   max-width: 100%;
@@ -68,7 +61,6 @@ body .news-card__body {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  height: 200px;
 }
 body .news-card__tags {
   display: flex;
@@ -79,7 +71,7 @@ body .news-card h2 {
   margin: 0;
   font-size: 1.1rem;
 }
-body .news-card p {
+body .news-card__excerpt {
   margin: 0;
   font-size: 0.9rem;
   opacity: 0.85;
