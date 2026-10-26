@@ -1,9 +1,9 @@
 @using "@fontsource/maple-mono";
-
 html, body {
   height: 100%;
   margin: 0;
 }
+
 body {
   font-family: "Maple Mono", monospace;
   font-weight: 400;
@@ -78,10 +78,15 @@ body .news-card h2 {
   margin: 0;
   font-size: 1.1rem;
 }
-body .news-card p {
+body .news-card__excerpt {
   margin: 0;
   font-size: 0.9rem;
   opacity: 0.85;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 body .news-card__author {
   font-size: 0.8rem;
