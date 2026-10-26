@@ -1,4 +1,10 @@
 ﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+
+@{
+    var selection = Umbraco.ContentAtRoot()
+    .Where(x => x.IsVisible());
+}
+
 <!doctype html>
 <html lang="sv">
 
@@ -10,9 +16,17 @@
 </head>
 
 <body>
-    <header>
-        <h1 style="text-align: center; border-bottom: 1px solid #fff; padding-bottom: 10px;">
+    <header style="text-align: center; border-bottom: 1px solid #fff; padding-bottom: 10px;">
+        <h1>
             Teknikern</h1>
+            <nav>
+                @foreach (var item in selection)
+                {
+                    <li style="display: inline;">
+                        [<a href="@item.Url()">@item.Name()</a>]
+                    </li>
+                }
+            </nav>
         </header>
 
         <main style="flex: 1;">
