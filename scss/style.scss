@@ -5,6 +5,11 @@ $text-color: #fff;
 $accent-color: #e0e052;
 $damped-accent-color: #adad1f;
 
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
 
 body {
     font-family: "Maple Mono", monospace;
@@ -12,6 +17,8 @@ body {
     font-style: normal;
     background: $background-color;
     color: $text-color;
+    display: flex;
+    flex-direction: column;
 
     img {
         max-width: 100%;
