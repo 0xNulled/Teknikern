@@ -1,0 +1,28 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+<!doctype html>
+<html lang="sv">
+
+<head>
+    <meta charset="utf-8">
+    <title>@Model.Name</title>
+    <link rel="stylesheet" href="/css/style.css">
+    @RenderSection("Head", required: false)
+</head>
+
+<body>
+    <header>
+        <h1 style="text-align: center; border-bottom: 1px solid #fff; padding-bottom: 10px;">
+            Teknikern</h1>
+        </header>
+
+        <main style="flex: 1;">
+            @RenderBody()
+        </main>
+
+        <footer>
+            <p style="text-align: center; margin-top: auto; border-top: 1px solid #fff; padding-top: 10px;">footer</p>
+        </footer>
+
+    </body>
+
+</html>
