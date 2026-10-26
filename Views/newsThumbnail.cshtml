@@ -1,26 +1,13 @@
 ﻿@using Umbraco.Cms.Core.Models
 @using Umbraco.Cms.Core.Models.PublishedContent
-@using System.Text.RegularExpressions
+@using Umbraco.Cms.Core.Strings
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedContent>
 @{
 	var thumbnail = Model.Value<MediaWithCrops>("thumbnail");
 	var title = Model.Value<string>("title");
-	var excerpt = StripAndTruncate(Model.Value("breadtext")?.ToString() ?? string.Empty);
+	var excerpt = Model.Value<HtmlEncodedString>("breadtext");
 	var authors = Model.Value<IEnumerable<IPublishedContent>>("authors") ?? Enumerable.Empty<IPublishedContent>();
 	var subjects = Model.Value<IEnumerable<IPublishedContent>>("subjectTags") ?? Enumerable.Empty<IPublishedContent>();
-}
-
-@functions {
-	public string StripAndTruncate(string html, int maxLength = 140)
-	{
-		if (string.IsNullOrWhiteSpace(html)) return string.Empty;
-		var text = Regex.Replace(html, "<.*?>", string.Empty).Trim();
-		if (text.Length >= maxLength)
-		{
-			text = text.Substring(0, maxLength).TrimEnd() + "...";
-		}
-		return text;
-	}
 }
 
 <a class="news-card" href="@Model.Url()">
@@ -42,7 +29,7 @@
 
 		<h2>@title</h2>
 
-		@if (!string.IsNullOrWhiteSpace(excerpt))
+		@if (excerpt != null)
 		{
 			<p>@excerpt</p>
 		}

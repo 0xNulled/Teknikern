@@ -68,6 +68,7 @@ body .news-card__body {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  height: 200px;
 }
 body .news-card__tags {
   display: flex;
@@ -82,6 +83,11 @@ body .news-card p {
   margin: 0;
   font-size: 0.9rem;
   opacity: 0.85;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 body .news-card__author {
   font-size: 0.8rem;
