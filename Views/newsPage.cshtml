@@ -1,5 +1,4 @@
-﻿@using Humanizer
-@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
 @{
     Layout = "~/Views/Master.cshtml";
 
@@ -7,6 +6,11 @@
         .Where(c => c.ContentType.Alias == "newsArticle")
         .OrderByDescending(c => c.CreateDate)
         .ToList();
+
+    var siteSettings = Umbraco.ContentAtRoot()
+        .FirstOrDefault(x => x.ContentType.Alias == "siteSettings");
+
+    var promoText = siteSettings?.Value<string>("promoText");
 }
 
 <div class="featured-article">
@@ -21,11 +25,7 @@
 
 <div class="promo-box"
      style="background-color:white; color: black;  min-height: 300px; clip-path: polygon(0 90px, 100% 0, 100% 200px, 0 100%); display: flex; align-items: center; flex-direction: column; justify-content: center;">
-    <p style="font-weight: 800; text-align: center; width:500px; letter-spacing: 0.1rem;">Teknikern är en självständig
-        hemsida
-        skapad för att
-        ge ofiltrerade
-        tech-nyheter. Joel Tommy Lindström, Joel Ringh, Felix Eklund, Hamze Osman och Edvin Fogelström
+    <p style="font-weight: 800; text-align: center; width:500px; letter-spacing: 0.1rem;">@promoText
     </p>
     <a href="/om-oss" style="letter-spacing: 0.3rem; color: rgb(0, 0, 0);">LÄS MER</a>
 </div>
