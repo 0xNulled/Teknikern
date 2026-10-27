@@ -41,10 +41,29 @@
 
         <footer>
             <div class="promo-box"
-                 style="background-color:white; color: black;  min-height: 300px; clip-path: polygon(0 50px, 100% 0, 100% 250px, 0 100%); display: flex; align-items: center; flex-direction: column; justify-content: center;">
-                <p style="font-weight: 800; text-align: center; width:500px; letter-spacing: 0.1rem;">@promoText
+                 style="background-color:white; color: black; gap:200px; min-height: 300px; clip-path: polygon(0 50px, 100% 0, 100% 250px, 0 100%); display: flex; align-items: center; flex-direction: row; justify-content: center;">
+                <p style="font-weight: 800; text-align: center; width:300px; letter-spacing: 0.1rem;">@promoText
                 </p>
-                <a href="/om-oss" style="letter-spacing: 0.3rem; color: rgb(0, 0, 0);">LÄS MER</a>
+                <nav style="flex-direction: column; display: flex; gap: 5px">
+                    <p style="font-weight: 900">NAVIGATION</p>
+                    @foreach (var item in selection)
+                    {
+                        <li style="display: inline;">
+                            <a style="color: black; letter-spacing: 0.1rem; text-decoration: underline;"
+                               href="@item.Url()">@item.Name.ToUpper()</a>
+                        </li>
+                    }
+                </nav>
+                <nav>
+                    <p style="font-weight: 900">SOCIAL</p>
+                    <li style="display: inline; flex-direction: column; display: flex; gap: 5px">
+                        <a style="color: black; letter-spacing: 0.1rem; text-decoration: underline;" href="">Instagram</a>
+                        <a style="color: black; letter-spacing: 0.1rem; text-decoration: underline;" href="">Twitter</a>
+                        <a style="color: black; letter-spacing: 0.1rem; text-decoration: underline;" href="">Facebook</a>
+                        <a style="color: black; letter-spacing: 0.1rem; text-decoration: underline;" href="">Tiktok</a>
+                        <a style="color: black; letter-spacing: 0.1rem; text-decoration: underline;" href="">RSS</a>
+                    </li>
+                </nav>
             </div>
             <p style="text-align: center; letter-spacing: 0.1rem; font-style: italic; font-weight: 100;">© 2026 Teknikern.
                 Made with
