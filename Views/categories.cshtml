@@ -3,4 +3,16 @@
 @using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
 @{
 	Layout = "~/Views/Master.cshtml";
+	var children = Model.Children();
 }
+
+<section class="articles">
+	<div class="theGrid">
+		@foreach(var category in children)
+		{
+			<div class="category_title">
+				<h2>@category.Value("categoryName")</h2>
+			</div>
+		}
+	</div>
+</section>
