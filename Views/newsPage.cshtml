@@ -1,18 +1,26 @@
-﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+﻿@using Humanizer
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
 @{
     Layout = "~/Views/Master.cshtml";
 
     var articles = Model.Children()
         .Where(c => c.ContentType.Alias == "newsArticle")
-        .OrderByDescending(c => c.CreateDate);
+        .OrderByDescending(c => c.CreateDate)
+        .ToList();
 }
 
 <div class="featured-article">
+    @{
+        Random randomNumber = new Random();
+        int randomArticle = randomNumber.Next(0, articles.Count);
+    }
+
+    @await Html.PartialAsync("featuredArticle", articles[randomArticle])
 
 </div>
 
 <div class="promo-box"
-     style="background-color:white; color: black;  min-height: 300px; clip-path: polygon(0 90px, 100% 0, 100% 200px, 0 100%); margin-top: 100px; display: flex; align-items: center; flex-direction: column; justify-content: center;">
+     style="background-color:white; color: black;  min-height: 300px; clip-path: polygon(0 90px, 100% 0, 100% 200px, 0 100%); display: flex; align-items: center; flex-direction: column; justify-content: center;">
     <p style="font-weight: 800; text-align: center; width:500px; letter-spacing: 0.1rem;">Teknikern är en självständig
         hemsida
         skapad för att
