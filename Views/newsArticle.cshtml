@@ -1,14 +1,12 @@
 ﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
 @{
 	Layout = "~/Views/Master.cshtml";
+	var image = Model.Value<Umbraco.Cms.Core.Models.PublishedContent.IPublishedContent>("thumbnail");
 }
 
 <div class="news-article">
 	<h1 style="text-align: center; margin-bottom: 40px;">@Model.Name</h1>
 
-	@{
-		var image = Model.Value<Umbraco.Cms.Core.Models.PublishedContent.IPublishedContent>("thumbnail");
-	}
 	@if (image != null)
 	{
 		<img src="@image.Url()" alt="@Model.Name" />

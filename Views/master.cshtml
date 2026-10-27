@@ -2,7 +2,13 @@
 
 @{
     var selection = Umbraco.ContentAtRoot()
+    .Where(x => x.ContentType.Alias != "siteSettings")
     .Where(x => x.IsVisible());
+
+    var siteSettings = Umbraco.ContentAtRoot()
+    .FirstOrDefault(x => x.ContentType.Alias == "siteSettings");
+
+    var promoText = siteSettings?.Value<string>("promoText");
 }
 
 <!doctype html>
@@ -34,9 +40,17 @@
         </main>
 
         <footer>
-            <p style="text-align: center; margin-top: auto; border-top: 1px solid #fff; padding-top: 10px;">footer</p>
-        </footer>
+            <div class="promo-box"
+                 style="background-color:white; color: black;  min-height: 300px; clip-path: polygon(0 50px, 100% 0, 100% 250px, 0 100%); display: flex; align-items: center; flex-direction: column; justify-content: center;">
+                <p style="font-weight: 800; text-align: center; width:500px; letter-spacing: 0.1rem;">@promoText
+                </p>
+                <a href="/om-oss" style="letter-spacing: 0.3rem; color: rgb(0, 0, 0);">LÄS MER</a>
+            </div>
+            <p style="text-align: center; letter-spacing: 0.1rem; font-style: italic; font-weight: 100;">© 2026 Teknikern.
+                Made with
+                Umbraco.</p>
+            </footer>
 
-    </body>
+        </body>
 
-</html>
+    </html>
