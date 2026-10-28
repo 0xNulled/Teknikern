@@ -96,6 +96,7 @@ body {
             font-size: 0.9rem;
             opacity: 0.85;
             display: -webkit-box;
+            line-clamp: 3;
             -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
             overflow: hidden;
@@ -105,6 +106,7 @@ body {
         &__title {
             min-height: 40px;
             display: -webkit-box;
+            line-clamp: 2;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;

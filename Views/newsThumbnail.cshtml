@@ -3,11 +3,16 @@
 @using Umbraco.Cms.Core.Strings
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedContent>
 @{
+
+	var siteSettings = Umbraco.ContentAtRoot()
+.FirstOrDefault(x => x.ContentType.Alias == "siteSettings");
+
 	var thumbnail = Model.Value<MediaWithCrops>("thumbnail");
 	var title = Model.Value<string>("title");
 	var excerpt = Model.Value<HtmlEncodedString>("breadtext");
 	var authors = Model.Value<IEnumerable<IPublishedContent>>("authors") ?? Enumerable.Empty<IPublishedContent>();
 	var subjects = Model.Value<IEnumerable<IPublishedContent>>("subjectTags") ?? Enumerable.Empty<IPublishedContent>();
+	var defaultAvatar = siteSettings?.Value<MediaWithCrops>(alias: "defaultAvatar");
 }
 
 <a class="news-card" href="@Model.Url()">
@@ -44,6 +49,11 @@
 					if (headshot != null)
 					{
 						<img src="@headshot.Url()" height="32px" width="32px"
+								 style="border-radius: 100%; border: 1px solid #adad1f; flex-shrink: 0; object-fit: cover; padding: 2px; margin-right: 5px;" />
+					}
+					else if (defaultAvatar != null)
+					{
+						<img src="@defaultAvatar.Url()" height="32px" width="32px"
 								 style="border-radius: 100%; border: 1px solid #adad1f; flex-shrink: 0; object-fit: cover; padding: 2px; margin-right: 5px;" />
 					}
 				}
