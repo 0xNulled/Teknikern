@@ -40,8 +40,7 @@
 		}
 
 		<span class="news-card__author">
-			@if (authors != null)
-			{
+			@{
 				foreach (var author in authors)
 				{
 					var headshot = author.Value<IPublishedContent>("headshot");
