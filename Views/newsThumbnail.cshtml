@@ -13,7 +13,7 @@
 <a class="news-card" href="@Model.Url()">
 	@if (thumbnail != null)
 	{
-		<img src="@thumbnail.Url()" alt="@title" />
+		<img src="@thumbnail.Url()" alt="@title" loading="lazy" />
 	}
 
 	<div class="news-card__body">
