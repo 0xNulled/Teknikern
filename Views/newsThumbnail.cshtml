@@ -3,39 +3,40 @@
 @using Umbraco.Cms.Core.Strings
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedContent>
 @{
-	var thumbnail = Model.Value<MediaWithCrops>("thumbnail");
-	var title = Model.Value<string>("title");
-	var excerpt = Model.Value<HtmlEncodedString>("breadtext");
-	var authors = Model.Value<IEnumerable<IPublishedContent>>("authors") ?? Enumerable.Empty<IPublishedContent>();
-	var subjects = Model.Value<IEnumerable<IPublishedContent>>("subjectTags") ?? Enumerable.Empty<IPublishedContent>();
+    var thumbnail = Model.Value<MediaWithCrops>("thumbnail");
+    var title = Model.Value<string>("title");
+    var excerpt = Model.Value<HtmlEncodedString>("breadtext");
+    var authors = Model.Value<IEnumerable<IPublishedContent>>("authors") ?? Enumerable.Empty<IPublishedContent>();
+    var subjects = Model.Value<IEnumerable<IPublishedContent>>("subjectTags") ?? Enumerable.Empty<IPublishedContent>();
 }
 
 <a class="news-card" href="@Model.Url()">
-	@if (thumbnail != null)
-	{
-		<img src="@thumbnail.Url()" alt="@title" />
-	}
+    @if (thumbnail != null)
+    {
+        <img src="@thumbnail.Url()" alt="@title" loading="lazy" />
+    }
 
-	<div class="news-card__body">
-		@if (subjects.Any())
-		{
-			<div class="news-card__tags">
-				@foreach (var subject in subjects)
-				{
-					<span class="tag">@(subject.Value<string>("subject"))</span>
-				}
-			</div>
-		}
+    <div class="news-card__body">
+        @if (subjects.Any())
+        {
+            <div class="news-card__tags">
+                @foreach (var subject in subjects)
+                {
+                    <span class="tag">@(subject.Value<string>("subject"))</span>
+                }
+            </div>
+        }
 
-		<h2>@title</h2>
+        <h2>@title</h2>
 
-		@if (excerpt != null)
-		{
+        @if (excerpt != null)
+        {
             <div class="news-card__excerpt">@excerpt</div>
-		}
+        }
 
-		<span class="news-card__author"> Skriven av:
-			@string.Join(", ", authors.Select(author => author.Value<string>("fullName")))
-		</span>
-	</div>
+        <span class="news-card__author">
+            Skriven av:
+            @string.Join(", ", authors.Select(author => author.Value<string>("fullName")))
+        </span>
+    </div>
 </a>

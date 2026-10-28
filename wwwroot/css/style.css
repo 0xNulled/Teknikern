@@ -83,7 +83,7 @@ body .news-card__excerpt {
   font-size: 0.9rem;
   opacity: 0.85;
   display: -webkit-box;
-  -webkit-line-clamp: 4;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
