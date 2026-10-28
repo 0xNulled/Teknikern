@@ -10,9 +10,14 @@
 	<div class="theGrid">
 		@foreach(var category in children)
 		{
-			<div class="category_title">
-				<h2>@category.Value("categoryName")</h2>
-			</div>
+			var categoryPage = category.Children().FirstOrDefault();
+
+			@if(categoryPage != null)
+			{
+				<div class="category_title">
+					<a href="@categoryPage.Url()"> @category.Value("categoryName")</a>
+				</div>	
+			}
 		}
 	</div>
 </section>
