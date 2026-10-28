@@ -1,6 +1,5 @@
 ﻿@using Humanizer
 @using Umbraco.Cms.Core.Models.PublishedContent
-@using Microsoft.AspNetCore.Mvc.ViewFeatures
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
 @{
     Layout = "~/Views/Master.cshtml";
@@ -8,6 +7,14 @@
     var articles = Model.Children()
         .Where(c => c.ContentType.Alias == "newsArticle")
         .OrderByDescending(c => c.CreateDate)
+        .ToList();
+
+    var allSubjects = articles
+        .SelectMany(a => a.Value<IEnumerable<IPublishedContent>>("subjectTags") ?? Enumerable.Empty<IPublishedContent>())
+        .Select(s => s.Value<string>("subject"))
+        .Where(s => !string.IsNullOrWhiteSpace(s))
+        .Distinct(StringComparer.OrdinalIgnoreCase)
+        .OrderBy(s => s)
         .ToList();
 
     var subjectFilter = Context.Request.Query["subject"].FirstOrDefault();
@@ -66,20 +73,33 @@
     <a href="/om-oss" style="letter-spacing: 0.3rem; color: rgb(0, 0, 0);">LÄS MER</a>
 </div>
 
-@if (!string.IsNullOrWhiteSpace(subjectFilter))
-{
-    <p style="text-align:center; margin: 20px 0;">
-        Visar ämne: <strong>@subjectFilter</strong> &nbsp;
-        <a href="@Model.Url()">Rensa filter</a>
-    </p>
-}
+<form method="get" action="@Model.Url()#news-list" style="text-align:center; margin: 20px 0;">
+    <label for="subject-filter" style="margin-right: 8px;">Filtrera på ämne:</label>
+    <select id="subject-filter" name="subject" onchange="this.form.submit()">
+        <option value="">Alla ämnen</option>
+        @foreach (var subject in allSubjects)
+        {
+            if (string.Equals(subject, subjectFilter, StringComparison.OrdinalIgnoreCase))
+            {
+                <option value="@subject" selected>@subject</option>
+            }
+            else
+            {
+                <option value="@subject">@subject</option>
+            }
+        }
+    </select>
+    <noscript>
+        <button type="submit">Filtrera</button>
+    </noscript>
+</form>
 
-<div class="news-list" style="max-width: 1400px; margin-left: auto; margin-right: auto;">
+<div class="news-list" id="news-list" style="max-width: 1400px; margin-left: auto; margin-right: auto;">
     @if (pagedArticles.Any())
     {
         @foreach (var article in pagedArticles)
         {
-            @await  Html.PartialAsync("newsThumbnail", article, new ViewDataDictionary(ViewData) { ["ListingUrl"] = Model.Url() })
+            @await  Html.PartialAsync("newsThumbnail", article)
         }
     }
     else
