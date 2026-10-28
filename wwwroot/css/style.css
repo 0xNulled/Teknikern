@@ -82,6 +82,14 @@ body .news-card__excerpt {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+body .news-card__title {
+  min-height: 40px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 body .news-card__author {
   font-size: 0.8rem;
   color: #adad1f;
