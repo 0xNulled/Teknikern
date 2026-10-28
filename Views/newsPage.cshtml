@@ -1,4 +1,6 @@
 ﻿@using Humanizer
+@using Umbraco.Cms.Core.Models.PublishedContent
+@using Microsoft.AspNetCore.Mvc.ViewFeatures
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
 @{
     Layout = "~/Views/Master.cshtml";
@@ -7,6 +9,15 @@
         .Where(c => c.ContentType.Alias == "newsArticle")
         .OrderByDescending(c => c.CreateDate)
         .ToList();
+
+    var subjectFilter = Context.Request.Query["subject"].FirstOrDefault();
+    if (!string.IsNullOrWhiteSpace(subjectFilter))
+    {
+        articles = articles
+            .Where(a => (a.Value<IEnumerable<IPublishedContent>>("subjectTags") ?? Enumerable.Empty<IPublishedContent>())
+                .Any(s => string.Equals(s.Value<string>("subject"), subjectFilter, StringComparison.OrdinalIgnoreCase)))
+            .ToList();
+    }
 
     var siteSettings = Umbraco.ContentAtRoot()
         .FirstOrDefault(x => x.ContentType.Alias == "siteSettings");
@@ -24,28 +35,56 @@
         .Skip((currentPage - 1) * pageSize)
         .Take(pageSize)
         .ToList();
-}
-<div class="featured-article">
-    @{
-        Random randomNumber = new Random();
-        int randomArticle = randomNumber.Next(0, articles.Count);
+
+    string PageLink(int page)
+    {
+        var query = $"page={page}";
+        if (!string.IsNullOrWhiteSpace(subjectFilter))
+        {
+            query += $"&subject={Uri.EscapeDataString(subjectFilter)}";
+        }
+        return $"{Model.Url()}?{query}";
     }
+}
+@if (articles.Count > 0)
+{
+    <div class="featured-article">
+        @{
+            Random randomNumber = new Random();
+            int randomArticle = randomNumber.Next(0, articles.Count);
+        }
 
-    @await Html.PartialAsync("featuredArticle", articles[randomArticle])
+        @await Html.PartialAsync("featuredArticle", articles[randomArticle])
 
-</div>
+    </div>
+}
 <div class="promo-box"
      style="background-color:white; color: black;  min-height: 300px; clip-path: polygon(0 90px, 100% 0, 100% 200px, 0 100%); display: flex; align-items: center; flex-direction: column; justify-content: center;">
     <p style="font-weight: 800; text-align: center; width:500px; letter-spacing: 0.1rem;">
         @promoText
-</p>
-<a href="/om-oss" style="letter-spacing: 0.3rem; color: rgb(0, 0, 0);">LÄS MER</a>
+    </p>
+    <a href="/om-oss" style="letter-spacing: 0.3rem; color: rgb(0, 0, 0);">LÄS MER</a>
 </div>
 
+@if (!string.IsNullOrWhiteSpace(subjectFilter))
+{
+    <p style="text-align:center; margin: 20px 0;">
+        Visar ämne: <strong>@subjectFilter</strong> &nbsp;
+        <a href="@Model.Url()">Rensa filter</a>
+    </p>
+}
+
 <div class="news-list" style="max-width: 1400px; margin-left: auto; margin-right: auto;">
-    @foreach (var article in pagedArticles)
+    @if (pagedArticles.Any())
     {
-        @await  Html.PartialAsync("newsThumbnail", article)
+        @foreach (var article in pagedArticles)
+        {
+            @await  Html.PartialAsync("newsThumbnail", article, new ViewDataDictionary(ViewData) { ["ListingUrl"] = Model.Url() })
+        }
+    }
+    else
+    {
+        <p style="text-align:center;">Inga artiklar hittades.</p>
     }
 </div>
 
@@ -54,7 +93,7 @@
     <nav class="pagination" style="display:flex; justify-content:center; align-items:center; gap:10px; margin: 30px 0;">
         @if (currentPage > 1)
         {
-            <a href="@(Model.Url())?page=@(currentPage - 1)">&laquo; Föregående</a>
+            <a href="@PageLink(currentPage - 1)">&laquo; Föregående</a>
         }
 
         @for (var i = 1; i <= totalPages; i++)
@@ -65,13 +104,13 @@
             }
             else
             {
-                <a href="@(Model.Url())?page=@i">@i</a>
+                <a href="@PageLink(i)">@i</a>
             }
         }
 
         @if (currentPage < totalPages)
         {
-            <a href="@(Model.Url())?page=@(currentPage + 1)">Nästa &raquo;</a>
+            <a href="@PageLink(currentPage + 1)">Nästa &raquo;</a>
         }
     </nav>
 }

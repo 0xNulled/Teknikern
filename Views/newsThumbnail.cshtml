@@ -8,12 +8,15 @@
     var excerpt = Model.Value<HtmlEncodedString>("breadtext");
     var authors = Model.Value<IEnumerable<IPublishedContent>>("authors") ?? Enumerable.Empty<IPublishedContent>();
     var subjects = Model.Value<IEnumerable<IPublishedContent>>("subjectTags") ?? Enumerable.Empty<IPublishedContent>();
+    var listingUrl = ViewData["ListingUrl"] as string ?? "/";
 }
 
-<a class="news-card" href="@Model.Url()">
+<div class="news-card">
     @if (thumbnail != null)
     {
-        <img src="@thumbnail.Url()" alt="@title" loading="lazy" />
+        <a href="@Model.Url()">
+            <img src="@thumbnail.Url()" alt="@title" loading="lazy" />
+        </a>
     }
 
     <div class="news-card__body">
@@ -22,12 +25,12 @@
             <div class="news-card__tags">
                 @foreach (var subject in subjects)
                 {
-                    <span class="tag">@(subject.Value<string>("subject"))</span>
+                    <a class="tag" style="text-decoration:none;" href="@listingUrl?subject=@Uri.EscapeDataString(subject.Value<string>("subject") ?? string.Empty)">@(subject.Value<string>("subject"))</a>
                 }
             </div>
         }
 
-        <h2>@title</h2>
+        <h2><a href="@Model.Url()" style="color: inherit; text-decoration: none;">@title</a></h2>
 
         @if (excerpt != null)
         {
@@ -39,4 +42,4 @@
             @string.Join(", ", authors.Select(author => author.Value<string>("fullName")))
         </span>
     </div>
-</a>
+</div>
