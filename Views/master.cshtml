@@ -22,54 +22,54 @@
 </head>
 
 <body>
-    <header style="text-align: center; border-bottom: 1px solid #fff; padding-bottom: 10px;">
-        <h1>
-            Teknikern</h1>
-            <nav>
+    <header
+        style="text-align: center; border-bottom: 1px solid #3d3d3d; padding-bottom: 10px; width: 90%; margin-right: auto; margin-left: auto;">
+        <img src="logo.png" style="margin-bottom: 20px; margin-top: 20px">
+        <nav style="border-top: 1px solid #3d3d3d; padding-top: 10px;">
+            @foreach (var item in selection)
+            {
+                <li style="display: inline; margin-left: 5px; margin-right: 5px">
+                    <a href="@item.Url()">@item.Name().ToUpper()</a>
+                </li>
+            }
+        </nav>
+    </header>
+
+    <main style="flex: 1;">
+        @RenderBody()
+    </main>
+
+    <footer>
+        <div class="promo-box"
+             style="background-color:white; color: black; gap:200px; min-height: 300px; clip-path: polygon(0 50px, 100% 0, 100% 250px, 0 100%); display: flex; align-items: center; flex-direction: row; justify-content: center;">
+            <p style="font-weight: 800; text-align: center; width:300px; letter-spacing: 0.1rem;">@promoText
+            </p>
+            <nav style="flex-direction: column; display: flex; gap: 5px">
+                <p style="font-weight: 900">NAVIGATION</p>
                 @foreach (var item in selection)
                 {
                     <li style="display: inline;">
-                        [<a href="@item.Url()">@item.Name()</a>]
+                        <a style="color: black; letter-spacing: 0.1rem; text-decoration: underline;"
+                           href="@item.Url()">@item.Name.ToUpper()</a>
                     </li>
                 }
             </nav>
-        </header>
+            <nav>
+                <p style="font-weight: 900">SOCIAL</p>
+                <li style="display: inline; flex-direction: column; display: flex; gap: 5px">
+                    <a style="color: black; letter-spacing: 0.1rem; text-decoration: underline;" href="">Instagram</a>
+                    <a style="color: black; letter-spacing: 0.1rem; text-decoration: underline;" href="">Twitter</a>
+                    <a style="color: black; letter-spacing: 0.1rem; text-decoration: underline;" href="">Facebook</a>
+                    <a style="color: black; letter-spacing: 0.1rem; text-decoration: underline;" href="">Tiktok</a>
+                    <a style="color: black; letter-spacing: 0.1rem; text-decoration: underline;" href="">RSS</a>
+                </li>
+            </nav>
+        </div>
+        <p style="text-align: center; letter-spacing: 0.1rem; font-style: italic; font-weight: 100;">© 2026 Teknikern.
+            Made with
+            Umbraco.</p>
+        </footer>
 
-        <main style="flex: 1;">
-            @RenderBody()
-        </main>
+    </body>
 
-        <footer>
-            <div class="promo-box"
-                 style="background-color:white; color: black; gap:200px; min-height: 300px; clip-path: polygon(0 50px, 100% 0, 100% 250px, 0 100%); display: flex; align-items: center; flex-direction: row; justify-content: center;">
-                <p style="font-weight: 800; text-align: center; width:300px; letter-spacing: 0.1rem;">@promoText
-                </p>
-                <nav style="flex-direction: column; display: flex; gap: 5px">
-                    <p style="font-weight: 900">NAVIGATION</p>
-                    @foreach (var item in selection)
-                    {
-                        <li style="display: inline;">
-                            <a style="color: black; letter-spacing: 0.1rem; text-decoration: underline;"
-                               href="@item.Url()">@item.Name.ToUpper()</a>
-                        </li>
-                    }
-                </nav>
-                <nav>
-                    <p style="font-weight: 900">SOCIAL</p>
-                    <li style="display: inline; flex-direction: column; display: flex; gap: 5px">
-                        <a style="color: black; letter-spacing: 0.1rem; text-decoration: underline;" href="">Instagram</a>
-                        <a style="color: black; letter-spacing: 0.1rem; text-decoration: underline;" href="">Twitter</a>
-                        <a style="color: black; letter-spacing: 0.1rem; text-decoration: underline;" href="">Facebook</a>
-                        <a style="color: black; letter-spacing: 0.1rem; text-decoration: underline;" href="">Tiktok</a>
-                        <a style="color: black; letter-spacing: 0.1rem; text-decoration: underline;" href="">RSS</a>
-                    </li>
-                </nav>
-            </div>
-            <p style="text-align: center; letter-spacing: 0.1rem; font-style: italic; font-weight: 100;">© 2026 Teknikern.
-                Made with
-                Umbraco.</p>
-            </footer>
-
-        </body>
-
-    </html>
+</html>
