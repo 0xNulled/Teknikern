@@ -2,17 +2,52 @@
 @{
 	Layout = "~/Views/Master.cshtml";
 	var image = Model.Value<Umbraco.Cms.Core.Models.PublishedContent.IPublishedContent>("thumbnail");
+	var authors = Model.Value<IEnumerable<IPublishedContent>>("authors") ?? Enumerable.Empty<IPublishedContent>();
+	var subjects = Model.Value<IEnumerable<IPublishedContent>>("subjectTags") ?? Enumerable.Empty<IPublishedContent>();
+
+
 }
 
-<div class="news-article">
-	<h1 style="text-align: center; margin-bottom: 40px;">@Model.Name</h1>
+<div>
+	@if (subjects.Any())
+	{
+		<div class="news-card__tags" style="margin-bottom: 20px; margin-top: 5%; width: 30%; margin-left: 25%">
+			@foreach (var subject in subjects)
+			{
+				<span class="tag">@(subject.Value<string>("subject"))</span>
+			}
+		</div>
+	}
+	<h1 style="margin-bottom: 40px; width: 50%; margin-left: 25%">@Model.Name
+		<span class="news-card__author" style="margin-top: 20px;">
+			@if (authors != null)
+			{
+				foreach (var author in authors)
+				{
+					var headshot = author.Value<IPublishedContent>("headshot");
+        
+					if (headshot != null)
+					{
+						<img src="@headshot.Url()" height="32px" width="32px"
+								 style="border-radius: 100%; border: 1px solid #adad1f; flex-shrink: 0; object-fit: cover; padding: 2px; margin-right: 5px;" />
+					}
+				}
+				@string.Join(", ", authors.Select(author => author.Value<string>("fullName")))
+			}
+		</span>
+	</h1>
 
 	@if (image != null)
 	{
-		<img src="@image.Url()" alt="@Model.Name" />
+		<img src="@image.Url()" alt="@Model.Name" height="auto" width="65%" style="max-width: 100%;
+		height: auto;
+		display: block;
+		margin: 0 auto;
+		border: 1px solid #adad1f;
+		padding: 5px" />
 	}
 
-	<article>
+	<article class="news-article">
 		@Model.Value("breadtext")
 	</article>
 </div>
