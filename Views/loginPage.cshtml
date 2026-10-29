@@ -1,0 +1,112 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@using Umbraco.Cms.Web.Common.Models
+@using Umbraco.Cms.Web.Common.Security
+@using Umbraco.Cms.Web.Website.Controllers
+@using Umbraco.Cms.Core.Services
+@using Umbraco.Extensions
+@inject IMemberExternalLoginProviders memberExternalLoginProviders
+@inject ITwoFactorLoginService twoFactorLoginService
+@{
+	Layout = "~/Views/Master.cshtml";
+	var loginModel = new LoginModel();
+	loginModel.RedirectUrl = "/min-profil";
+}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js"></script>
+<script
+src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
+
+<div style="display: flex; justify-content: center; align-items: center; min-height: 70vh; flex-direction: column">
+	<h1 style="letter-spacing: 0.25rem; font-weight: 100; margin-bottom: 20px;">INLOGGNING</h1>
+
+	@if (ViewData.TryGetTwoFactorProviderNames(out var providerNames))
+	{
+		foreach (var providerName in providerNames)
+		{
+			<div class="2fa-form"
+					 style="display: flex; flex-direction: column; width: 400px; border: 1px solid white; padding: 20px;">
+				<h4>Two factor with @providerName.</h4>
+				<div asp-validation-summary="All" class="text-danger"></div>
+				@using (Html.BeginUmbracoForm<UmbTwoFactorLoginController>(nameof(UmbTwoFactorLoginController.Verify2FACode)))
+				{
+					<input type="hidden" name="provider" value="@providerName" />
+					<p>Input security code:</p>
+					<input name="code" value="" style="height: 30px; width: 100%; box-sizing: border-box; margin-bottom: 15px;" />
+					<div style="display: flex; align-items: center; justify-content: center;">
+						<button type="submit" class="primary-btn" style="width: 60%;">Validate</button>
+					</div>
+					<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+				}
+			</div>
+		}
+	}
+	else
+	{
+		<div
+			style="display: flex; flex-direction: column; width: 400px; border: 1px solid white; padding: 20px 20px 10px 20px;">
+			@using (Html.BeginUmbracoForm<UmbLoginController>("HandleLogin", new { RedirectUrl = loginModel.RedirectUrl }))
+			{
+				<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+				<p style="margin-bottom: 5px;">Användarnamn</p>
+				<input asp-for="@loginModel.Username"
+							 style="height: 30px; width: 100%; box-sizing: border-box; margin-bottom: 10px;" />
+				<span asp-validation-for="@loginModel.Username" class="form-text text-danger" style="font-size: 12px;"></span>
+
+				<p style="margin-bottom: 5px; margin-top: 10px;">Lösenord</p>
+				<input asp-for="@loginModel.Password" type="password"
+							 style="height: 30px; width: 100%; box-sizing: border-box; margin-bottom: 10px;" />
+				<span asp-validation-for="@loginModel.Password" class="form-text text-danger" style="font-size: 12px;"></span>
+
+				<div style="margin: 10px 0; display: flex; align-items: center; gap: 8px;">
+					<input asp-for="@loginModel.RememberMe" />
+					<label asp-for="@loginModel.RememberMe" style="font-size: 14px;">Kom ihåg mig</label>
+				</div>
+
+				<div style="display: flex; align-items: center; justify-content: center; margin-top: 15px;">
+					<button type="submit" class="primary-btn" style="width: 60%;">Logga in</button>
+				</div>
+			}
+
+			<p style="margin-top: 20px; margin-bottom: 10px; text-align: center; font-size: 13px">
+				Har du inget konto?<a href="/registrera-dig"
+															style="text-decoration: underline; margin-left: 10px; color: inherit;">REGISTRERA DIG</a>
+			</p>
+
+			@{
+				var loginProviders = await memberExternalLoginProviders.GetMemberProvidersAsync();
+				var externalSignInError = ViewData.GetExternalSignInProviderErrors();
+
+				if (loginProviders.Any())
+				{
+					<hr style="border-color: #3d3d3d; margin: 15px 0;" />
+					<p style="font-size: 13px; text-align: center; margin-bottom: 10px;">Eller logga in med extern leverantör</p>
+                    
+					if (externalSignInError?.AuthenticationType is null && externalSignInError?.Errors.Any() == true)
+					{
+						@Html.DisplayFor(x => externalSignInError.Errors)
+					}
+
+					foreach (var login in loginProviders)
+					{
+						using (Html.BeginUmbracoForm<UmbExternalLoginController>(nameof(UmbExternalLoginController.ExternalLogin)))
+						{
+							<div style="display: flex; justify-content: center; margin-bottom: 8px;">
+								<button type="submit" name="provider" value="@login.ExternalLoginProvider.AuthenticationType" class="primary-btn"
+												style="width: 80%;">
+									Sign in with @login.AuthenticationScheme.DisplayName
+								</button>
+							</div>
+
+							if (externalSignInError?.AuthenticationType == login.ExternalLoginProvider.AuthenticationType)
+							{
+								@Html.DisplayFor(x => externalSignInError.Errors)
+							}
+						}
+					}
+				}
+			}
+		</div>
+	}
+</div>

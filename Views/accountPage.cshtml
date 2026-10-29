@@ -1,0 +1,30 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+
+@using Umbraco.Cms.Web.Common.Models
+@using Umbraco.Cms.Web.Website.Controllers
+@using Umbraco.Extensions
+
+@{
+	Layout = "~/Views/Master.cshtml";
+	var isLoggedIn = Context.User.GetMemberIdentity()?.IsAuthenticated ?? false;
+	var logoutModel = new PostRedirectModel();
+	// You can modify this to redirect to a different URL instead of the current one
+	logoutModel.RedirectUrl = "/";
+}
+
+@if (isLoggedIn)
+{
+	<div style="display: flex; align-items: center; min-height: 50vh; flex-direction: column; margin-top: 100px">
+
+		<p>Profilsida för: <strong>@Context.User?.GetMemberIdentity()?.Name</strong>!</p>
+
+		@using (Html.BeginUmbracoForm<UmbLoginStatusController>("HandleLogout", new
+		{
+			RedirectUrl = logoutModel.RedirectUrl
+		}))
+		{
+			<button type="submit" class="primary-btn">Logga ut</button>
+		}
+
+	</div>
+}
