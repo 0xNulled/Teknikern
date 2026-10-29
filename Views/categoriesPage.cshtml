@@ -8,35 +8,31 @@
 	var newsArticles = nyheter?.Children()
 			.Where(x => x.ContentType.Alias == "newsArticle")
 			?? Enumerable.Empty<IPublishedContent>();
-	
-	var children = nyheter?.Children()
-			.Where(X => X.Name == "Nyhetsämnen Mapp");
+
+	var tagFolder = nyheter?.Children().FirstOrDefault(x => x.Name == "Nyhetsämnen Mapp");
+	var tags = tagFolder?.Children().ToList() ?? new List<IPublishedContent>();
 
 	//Behövs en variabel som trackar vilken kategori vi vill rendera
 }
 
 <section class="articles">
-	<div class="theGrid">
-		@foreach (var category in children)
+	@for (int i = 0; i < tags.Count(); i++)
+	{
 		{
-			var categoryPage = category.Children().FirstOrDefault();
-
-			@if (categoryPage != null)
-			{
-				<div class="category_title">
-					<button> @categoryPage.Name</button> @{
-					/*Ändra en variabel här för att sortera efter*/
-				}
-			</div>
-		}
+			<div class="category_title">
+				<button>@tags.ElementAt(i).Name</button> @{
+				/*Ändra en variabel här för att sortera efter*/
+			}
+		</div>
 	}
 
-	<div class="news-list" style="max-width: 1400px; margin-left: auto; margin-right: auto;">
-		@foreach (var article in newsArticles)
-		{
-			@await Html.PartialAsync("newsThumbnail", article)
-			/*Rendera bara utifrån sorteringen*/
-		}
-	</div>
+}
+
+<div class="news-list" style="max-width: 1400px; margin-left: auto; margin-right: auto;">
+	@foreach (var article in newsArticles)
+	{
+		@await Html.PartialAsync("newsThumbnail", article)
+		/*Rendera bara utifrån sorteringen*/
+	}
 </div>
 </section>
