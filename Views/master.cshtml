@@ -2,8 +2,11 @@
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
 
 @{
+    /*TODO: Fix this*/
     var selection = Umbraco.ContentAtRoot()
     .Where(x => x.ContentType.Alias != "siteSettings")
+    .Where(x => x.ContentType.Alias != "loginPage")
+    .Where(x => x.ContentType.Alias != "registerPage")
     .Where(x => x.IsVisible());
 
     var siteSettings = Umbraco.ContentAtRoot()
