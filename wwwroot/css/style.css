@@ -125,3 +125,22 @@ body .primary-btn {
 body .primary-btn:hover {
   background-color: #adad1f;
 }
+body .outline-btn {
+  background-color: #000;
+  padding: 10px;
+  border: 2px solid #e0e052;
+  color: #e0e052;
+  clip-path: polygon(2px 2px, 100% 0, 99% 95%, 0 100%);
+  font-size: 1rem;
+  font-family: "Maple Mono", monospace;
+  font-weight: 100;
+  text-transform: uppercase;
+  letter-spacing: 0.1rem;
+  cursor: pointer;
+}
+body .outline-btn:hover {
+  background-color: #333309;
+}
+body .outline-btn[aria-pressed=true] {
+  background-color: #5e5e11;
+}
