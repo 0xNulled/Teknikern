@@ -1,22 +1,108 @@
 ﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+
+@using Umbraco.Cms.Core
+@using Umbraco.Cms.Web.Website.Controllers
+@using Umbraco.Cms.Web.Website.Models
+@using Umbraco.Extensions
+@inject MemberModelBuilderFactory memberModelBuilderFactory;
+
 @{
 	Layout = "~/Views/Master.cshtml";
+	// Build a registration model with parameters
+	var registerModel = memberModelBuilderFactory
+			.CreateRegisterModel()
+			// Set the member type alias to use for the new member
+			.WithMemberTypeAlias(Constants.Conventions.MemberTypes.DefaultAlias)
+			// If null or not set, this will redirect to the current page
+			.WithRedirectUrl(null)
+			// Set to true if you want the member editable properties shown.
+			// It will only displays properties marked as "Member can edit" on the "Info" tab of the Member Type.
+			.WithCustomProperties(false)
+			// By default the member will be logged in automatically after registration.
+			// Set this to false if the member should not be logged in automatically.
+			.WithAutomaticLogIn(true)
+			.Build();
+
+	var success = TempData["FormSuccess"] != null;
 }
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js"></script>
+<script
+src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
+
 <div style="display: flex; justify-content: center; align-items: center; min-height: 70vh; flex-direction: column">
-	<h1 style="letter-spacing: 0.25rem; font-weight: 100">SKAPA KONTO</h1>
-	<div
-		style="display: flex; flex-direction: column; width: 400px; border: 1px solid white; padding: 0px 20px 0px 20px; height: 450px;">
-		<p>Användarnamn</p>
-		<input style="height: 30px" />
-		<p style="margin-top: 40px">Lösenord</p>
-		<input type="password" style="height: 30px;" />
-		<p>Bekräfta Lösenord</p>
-		<input type="password" style="height: 30px" />
-		<div style="display: flex; align-items: center; justify-content: center; margin-top: 40px">
-			<button class="primary-btn" style="width: 60%;">Registrera konto</button>
+	<h1 style="letter-spacing: 0.25rem; font-weight: 100; margin-bottom: 20px;">SKAPA KONTO</h1>
+
+	@if (success)
+	{
+		<p class="text-success" style="text-align: center;">Registration succeeded.</p>
+	}
+	else
+	{
+		<div
+			style="display: flex; flex-direction: column; width: 400px; border: 1px solid white; padding: 20px 20px 10px 20px;">
+			@using (Html.BeginUmbracoForm<UmbRegisterController>(
+						"HandleRegisterMember",
+						new
+						{
+							MemberTypeAlias = registerModel.MemberTypeAlias,
+							UsernameIsEmail = registerModel.UsernameIsEmail,
+							RedirectUrl = registerModel.RedirectUrl,
+							AutomaticLogIn = registerModel.AutomaticLogIn
+						}))
+			{
+				<div asp-validation-summary="All" class="text-danger" style="font-size: 13px; margin-bottom: 10px;"></div>
+
+				<p style="margin-bottom: 5px;">Namn</p>
+				<input asp-for="@registerModel.Name" style="height: 30px; width: 100%; box-sizing: border-box; margin-bottom: 5px;"
+							 aria-required="true" />
+				<span asp-validation-for="@registerModel.Name" class="form-text text-danger" style="font-size: 12px;"></span>
+
+				<p style="margin-bottom: 5px; margin-top: 10px;">E-post / Användarnamn</p>
+				<input asp-for="@registerModel.Email" autocomplete="username"
+							 style="height: 30px; width: 100%; box-sizing: border-box; margin-bottom: 5px;" aria-required="true" />
+				<span asp-validation-for="@registerModel.Email" class="form-text text-danger" style="font-size: 12px;"></span>
+
+				<p style="margin-bottom: 5px; margin-top: 10px;">Lösenord</p>
+				<input asp-for="@registerModel.Password" type="password" autocomplete="new-password"
+							 style="height: 30px; width: 100%; box-sizing: border-box; margin-bottom: 5px;" aria-required="true" />
+				<span asp-validation-for="@registerModel.Password" class="form-text text-danger" style="font-size: 12px;"></span>
+
+				<p style="margin-bottom: 5px; margin-top: 10px;">Bekräfta Lösenord</p>
+				<input asp-for="@registerModel.ConfirmPassword" type="password" autocomplete="new-password"
+							 style="height: 30px; width: 100%; box-sizing: border-box; margin-bottom: 15px;" aria-required="true" />
+				<span asp-validation-for="@registerModel.ConfirmPassword" class="form-text text-danger"
+							style="font-size: 12px;"></span>
+
+				@if (registerModel.MemberProperties != null)
+				{
+					for (var i = 0; i < registerModel.MemberProperties.Count; i++)
+					{
+						<div style="margin-bottom: 10px;">
+							@Html.LabelFor(m => registerModel.MemberProperties[i].Value, registerModel.MemberProperties[i].Name, new
+							{
+								@style
+= "margin-bottom: 5px; display: block;"
+							})
+							<input asp-for="@registerModel.MemberProperties[i].Value"
+										 style="height: 30px; width: 100%; box-sizing: border-box;" />
+							@Html.HiddenFor(m => registerModel.MemberProperties[i].Alias)
+							<span asp-validation-for="@registerModel.MemberProperties[i].Value" class="form-text text-danger"
+										style="font-size: 12px;"></span>
+						</div>
+					}
+				}
+
+				<div style="display: flex; align-items: center; justify-content: center; margin-top: 20px;">
+					<button type="submit" class="primary-btn" style="width: 60%;">Registrera konto</button>
+				</div>
+			}
+
+			<p style="margin-top: 20px; margin-bottom: 10px; text-align: center; font-size: 13px">
+				Har du redan ett konto?<a href="/logga-in"
+																	style="text-decoration: underline; margin-left: 10px; color: inherit;">LOGGA IN</a>
+			</p>
 		</div>
-		<p style="margin-top: 20px; margin-left: auto; margin-right: auto; font-size: 13px">Har du redan ett konto?<a
-			href="logga-in" style="text-decoration: underline; margin-left: 10px;">LOGGA IN</a></p>
-		</div>
-	</div>
+	}
+</div>
