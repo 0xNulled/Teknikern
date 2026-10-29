@@ -133,4 +133,21 @@ body {
         padding: 2px 8px;
         border-radius: 999px;
     }
+
+    .primary-btn {
+        background: $accent-color;
+        padding: 20px;
+        border: none;
+        clip-path: polygon(7px 10px, 100% 0, 95% 50px, 0 100%);
+        font-size: 1rem;
+        font-family: "Maple Mono", monospace;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 0.1rem;
+        cursor: pointer;
+    }
+
+    .primary-btn:hover {
+        background-color: $damped-accent-color;
+    }
 }
