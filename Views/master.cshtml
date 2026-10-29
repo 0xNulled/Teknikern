@@ -28,7 +28,9 @@
         style="text-align: center; border-bottom: 1px solid #3d3d3d; padding-bottom: 10px; width: 90%; margin-right: auto; margin-left: auto;">
         @if (siteLogo != null)
         {
-            <img src="@siteLogo.Url()" style="margin-bottom: 20px; margin-top: 20px">
+            <a href="/">
+                <img src="@siteLogo.Url()" style="margin-bottom: 20px; margin-top: 20px">
+            </a>
         }
         <nav style="border-top: 1px solid #3d3d3d; padding-top: 10px;">
             @foreach (var item in selection)
