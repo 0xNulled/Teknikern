@@ -14,7 +14,7 @@
 			// Set the member type alias to use for the new member
 			.WithMemberTypeAlias(Constants.Conventions.MemberTypes.DefaultAlias)
 			// If null or not set, this will redirect to the current page
-			.WithRedirectUrl(null)
+			.WithRedirectUrl("/min-profil")
 			// Set to true if you want the member editable properties shown.
 			// It will only displays properties marked as "Member can edit" on the "Info" tab of the Member Type.
 			.WithCustomProperties(false)
@@ -36,7 +36,7 @@ src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11
 
 	@if (success)
 	{
-		<p class="text-success" style="text-align: center;">Registration succeeded.</p>
+		<button class="primary-btn" onclick="window.location.href='/min-profil'">Profil</button>
 	}
 	else
 	{
