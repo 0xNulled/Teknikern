@@ -3,11 +3,16 @@
 @using Umbraco.Cms.Core.Strings
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedContent>
 @{
+  var siteSettings = Umbraco.ContentAtRoot()
+    .FirstOrDefault(x => x.ContentType.Alias == "siteSettings");
+    
   var thumbnail = Model.Value<MediaWithCrops>("thumbnail");
   var title = Model.Value<string>("title");
   var excerpt = Model.Value<HtmlEncodedString>("breadtext");
   var authors = Model.Value<IEnumerable<IPublishedContent>>("authors") ?? Enumerable.Empty<IPublishedContent>();
   var subjects = Model.Value<IEnumerable<IPublishedContent>>("subjectTags") ?? Enumerable.Empty<IPublishedContent>();
+  var defaultAvatar = siteSettings?.Value<MediaWithCrops>(alias: "defaultAvatar");
+
 }
 <div style="display: flex; flex-direction: grid;">
 
@@ -31,8 +36,25 @@
         <div class="news-card__excerpt">@excerpt</div>
       }
 
-      <span class="news-card__author"> Skriven av:
-        @string.Join(", ", authors.Select(author => author.Value<string>("fullName")))
+      <span class="news-card__author">
+        @{
+          foreach (var author in authors)
+          {
+            var headshot = author.Value<IPublishedContent>("headshot");
+        
+            if (headshot != null)
+            {
+              <img src="@headshot.Url()" height="32px" width="32px"
+                   style="border-radius: 100%; border: 1px solid #adad1f; flex-shrink: 0; object-fit: cover; padding: 2px; margin-right: 5px;" />
+            }
+            else if (defaultAvatar != null)
+            {
+              <img src="@defaultAvatar.Url()" height="32px" width="32px"
+                   style="border-radius: 100%; border: 1px solid #adad1f; flex-shrink: 0; object-fit: cover; padding: 2px; margin-right: 5px;" />
+            }
+          }
+          @string.Join(", ", authors.Select(author => author.Value<string>("fullName")))
+        }
       </span>
     </div>
   </a>
