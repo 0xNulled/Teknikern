@@ -1,0 +1,64 @@
+@using Umbraco.Cms.Core.Models.PublishedContent
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+	Layout = "~/Views/Master.cshtml";
+
+	var nyheter = Umbraco.ContentAtRoot().FirstOrDefault(x => x.Name == "Nyheter");
+	var newsArticles = nyheter?.Children()
+			.Where(x => x.ContentType.Alias == "newsArticle")
+			?? Enumerable.Empty<IPublishedContent>();
+
+	var tagFolder = nyheter?.Children().FirstOrDefault(x => x.Name == "Nyhetsämnen Mapp");
+	var tags = tagFolder?.Children().ToList() ?? new List<IPublishedContent>();
+}
+
+<section class="articles">
+	<div class="category_title">
+		<button type="button" data-tag-key="" aria-pressed="true">Alla</button>
+		@foreach (var tag in tags)
+		{
+			<button type="button" data-tag-key="@tag.Key.ToString("N")" aria-pressed="false">
+				@(tag.Value<string>("subject") ?? tag.Name)
+			</button>
+		}
+	</div>
+
+	<div class="news-list" style="max-width: 1400px; margin-left: auto; margin-right: auto;">
+		@foreach (var article in newsArticles)
+		{
+			var subjectTags = article.Value<IEnumerable<IPublishedContent>>("subjectTags")
+				?? Enumerable.Empty<IPublishedContent>();
+			var subjectTagKeys = string.Join(",", subjectTags.Select(tag => tag.Key.ToString("N")));
+
+			<div class="news-list__item" data-subject-tags="@subjectTagKeys">
+				@await Html.PartialAsync("newsThumbnail", article)
+			</div>
+		}
+	</div>
+</section>
+
+<style>
+	.news-list__item[hidden] {
+		display: none;
+	}
+</style>
+
+<script>
+	const categoryButtons = document.querySelectorAll(".category_title [data-tag-key]");
+	const articleCards = document.querySelectorAll(".news-list__item");
+
+	categoryButtons.forEach(button => {
+		button.addEventListener("click", () => {
+			const selectedTagKey = button.dataset.tagKey;
+
+			articleCards.forEach(card => {
+				const subjectTagKeys = card.dataset.subjectTags.split(",");
+				card.hidden = selectedTagKey !== "" && !subjectTagKeys.includes(selectedTagKey);
+			});
+
+			categoryButtons.forEach(categoryButton => {
+				categoryButton.setAttribute("aria-pressed", String(categoryButton === button));
+			});
+		});
+	});
+</script>
