@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using System.ServiceModel.Syndication;
+using System.Text.RegularExpressions;
 using System.Xml;
 using Umbraco.Cms.Core;
 using Umbraco.Extensions;
@@ -15,6 +16,13 @@ namespace Teknikern.Controllers
             _publishedContentQuery = publishedContentQuery;
         }
 
+        private static string StripHtml(string html)
+        {
+            var noTags = Regex.Replace(html ?? string.Empty, "<.*?>", " ");
+            var collapsed = Regex.Replace(noTags, @"\s+", " ").Trim();
+            return System.Net.WebUtility.HtmlDecode(collapsed);
+        }
+
         [Route("/rss")]
         public IActionResult Index()
         {
@@ -28,14 +36,16 @@ namespace Teknikern.Controllers
             var request = HttpContext.Request;
             var baseUrl = $"{request.Scheme}://{request.Host}";
 
-            var items = articles.Select(a => new SyndicationItem(
-                a.Value<string>("title") ?? a.Name,
-                a.Value<string>("breadtext") ?? string.Empty,
-                new Uri(baseUrl + a.Url())
-            )
+            var items = articles.Select(a =>
             {
-                PublishDate = a.CreateDate,
-                Id = baseUrl + a.Url()
+                var item = new SyndicationItem
+                {
+                    Title = new TextSyndicationContent(a.Value<string>("title") ?? a.Name),
+                    Content = new TextSyndicationContent(StripHtml(a.Value<string>("breadtext") ?? string.Empty)),
+                    PublishDate = a.CreateDate
+                };
+                item.Links.Add(SyndicationLink.CreateAlternateLink(new Uri(baseUrl + a.Url())));
+                return item;
             }).ToList();
 
             var feed = new SyndicationFeed(
