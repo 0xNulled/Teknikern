@@ -1,13 +1,15 @@
-﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+﻿@using Umbraco.Cms.Core.Models
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
 @{
+	var siteSettings = Umbraco.ContentAtRoot()
+	.FirstOrDefault(x => x.ContentType.Alias == "siteSettings");
+	
 	Layout = "~/Views/Master.cshtml";
 	var image = Model.Value<Umbraco.Cms.Core.Models.PublishedContent.IPublishedContent>("thumbnail");
 	var authors = Model.Value<IEnumerable<IPublishedContent>>("authors") ?? Enumerable.Empty<IPublishedContent>();
 	var subjects = Model.Value<IEnumerable<IPublishedContent>>("subjectTags") ?? Enumerable.Empty<IPublishedContent>();
 	var photoBy = Model.Value<string>("photoBy");
-
-
-
+	var defaultAvatar = siteSettings?.Value<MediaWithCrops>(alias: "defaultAvatar");
 }
 
 @if (subjects.Any())
@@ -29,6 +31,11 @@
 				if (headshot != null)
 				{
 					<img src="@headshot.Url()" height="32px" width="32px"
+							 style="border-radius: 100%; border: 1px solid #adad1f; flex-shrink: 0; object-fit: cover; padding: 2px; margin-right: 5px;" />
+				}
+				else if (defaultAvatar != null)
+				{
+					<img src="@defaultAvatar.Url()" height="32px" width="32px"
 							 style="border-radius: 100%; border: 1px solid #adad1f; flex-shrink: 0; object-fit: cover; padding: 2px; margin-right: 5px;" />
 				}
 			}
