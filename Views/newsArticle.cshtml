@@ -4,6 +4,7 @@
 	var image = Model.Value<Umbraco.Cms.Core.Models.PublishedContent.IPublishedContent>("thumbnail");
 	var authors = Model.Value<IEnumerable<IPublishedContent>>("authors") ?? Enumerable.Empty<IPublishedContent>();
 	var subjects = Model.Value<IEnumerable<IPublishedContent>>("subjectTags") ?? Enumerable.Empty<IPublishedContent>();
+	var articleId = Model.Id;
 
 
 }
@@ -48,3 +49,21 @@
 <article class="news-article">
 	@Model.Value("breadtext")
 </article>
+
+<div>
+	@{
+		<comment>@articleId</comment>
+	}
+</div>
+<div
+	style="margin-left: auto; margin-right: auto; display: flex; flex-direction: column; width: 50%; justify-content: center; align-items: center; gap: 10px; margin-bottom: 100px;">
+	<label>Kommentera denna artikeln</label>
+	<textarea class="comment-box" style="resize: none; width: 100%; height: 200px; font-size: 20px;"></textarea>
+	<button class="primary-btn">Skicka</button>
+</div>
+
+<style>
+	.comment-box:focus {
+		outline: 3px solid #e0e052;
+	}
+</style>
