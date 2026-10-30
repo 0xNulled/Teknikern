@@ -13,11 +13,12 @@
 }
 
 <section class="articles">
-	<div class="category_title">
-		<button type="button" data-tag-key="" aria-pressed="true">Alla</button>
+	<div class="category_title"
+			 style="margin-top: 20px; display:flex; gap: 10px; justify-items: center; justify-content: center;">
+		<button class="outline-btn" type="button" data-tag-key="" aria-pressed="true">Alla</button>
 		@foreach (var tag in tags)
 		{
-			<button type="button" data-tag-key="@tag.Key.ToString("N")" aria-pressed="false">
+			<button class="outline-btn" type="button" data-tag-key="@tag.Key.ToString("N")" aria-pressed="false">
 				@(tag.Value<string>("subject") ?? tag.Name)
 			</button>
 		}

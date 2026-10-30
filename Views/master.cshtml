@@ -2,8 +2,12 @@
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
 
 @{
+    /*TODO: Fix this*/
     var selection = Umbraco.ContentAtRoot()
     .Where(x => x.ContentType.Alias != "siteSettings")
+    .Where(x => x.ContentType.Alias != "loginPage")
+    .Where(x => x.ContentType.Alias != "registerPage")
+    .Where(x => x.ContentType.Alias != "accountPage")
     .Where(x => x.IsVisible());
 
     var siteSettings = Umbraco.ContentAtRoot()
@@ -11,6 +15,8 @@
 
     var promoText = siteSettings?.Value<string>("promoText");
     var siteLogo = siteSettings?.Value<MediaWithCrops>(alias: "siteLogo");
+
+    var isLoggedIn = Context.User.GetMemberIdentity()?.IsAuthenticated ?? false;
 }
 
 <!doctype html>
@@ -32,19 +38,33 @@
                 <img src="@siteLogo.Url()" style="margin-bottom: 20px; margin-top: 20px">
             </a>
         }
-        <nav style="border-top: 1px solid #3d3d3d; padding-top: 10px;">
-            @foreach (var item in selection)
-            {
-                <li style="display: inline; margin-left: 5px; margin-right: 5px">
-                    <a href="@item.Url()">@item.Name().ToUpper()</a>
-                </li>
-            }
-        </nav>
-    </header>
+        @if (isLoggedIn)
+        {
+            <button class="primary-btn" onclick="window.location.href='/min-profil'"
+                    style="margin-top: 10px; position: absolute;">Profil</button>
+        }
+        else
+        {
+            <button class="primary-btn" onclick="window.location.href='/logga-in'"
+                    style="margin-top: 10px; position: absolute;">Logga
+                in</button>
+                <button class="primary-btn" onclick="window.location.href='/registrera-dig'"
+                        style="margin-top: 10px; position: absolute; top: 60px;">Registrera
+                    dig</button>
+                }
+                <nav style="border-top: 1px solid #3d3d3d; padding-top: 10px;">
+                    @foreach (var item in selection)
+                    {
+                        <li style="display: inline; margin-left: 5px; margin-right: 5px">
+                            <a href="@item.Url()">@item.Name().ToUpper()</a>
+                        </li>
+                    }
+                </nav>
+            </header>
 
-    <main style="flex: 1;">
-        @RenderBody()
-    </main>
+            <main style="flex: 1;">
+                @RenderBody()
+            </main>
 
     <footer>
         <div class="promo-box"
@@ -77,6 +97,6 @@
             Umbraco.</p>
         </footer>
 
-    </body>
+            </body>
 
-</html>
+        </html>
