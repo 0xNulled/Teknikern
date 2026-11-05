@@ -33,12 +33,14 @@
             </a>
         }
         <nav style="border-top: 1px solid #3d3d3d; padding-top: 10px;">
-            @foreach (var item in selection)
-            {
-                <li style="display: inline; margin-left: 5px; margin-right: 5px">
-                    <a href="@item.Url()">@item.Name().ToUpper()</a>
-                </li>
-            }
+            <menu style="margin: 0">
+                @foreach (var item in selection)
+                {
+                    <li style="display: inline; margin-left: 5px; margin-right: 5px">
+                        <a class="light-link" href="@item.Url()">@item.Name().ToUpper()</a>
+                    </li>
+                }
+            </menu>
         </nav>
     </header>
 
@@ -51,25 +53,38 @@
              style="background-color:white; color: black; gap:200px; min-height: 300px; clip-path: polygon(0 50px, 100% 0, 100% 250px, 0 100%); display: flex; align-items: center; flex-direction: row; justify-content: center;">
             <p style="font-weight: 800; text-align: center; width:300px; letter-spacing: 0.1rem;">@promoText
             </p>
-            <nav style="flex-direction: column; display: flex; gap: 5px">
+            <nav>
                 <p style="font-weight: 900">NAVIGATION</p>
-                @foreach (var item in selection)
-                {
-                    <li style="display: inline;">
-                        <a style="color: black; letter-spacing: 0.1rem; text-decoration: underline;"
-                           href="@item.Url()">@item.Name.ToUpper()</a>
-                    </li>
-                }
+                <menu style="display: inline; flex-direction: column; display: flex; gap: 10px;
+                    list-style-type: none; padding-left: 0px;">
+                    @foreach (var item in selection)
+                    {
+                        <li>
+                            <a class="dark-link" href=" @item.Url()">@item.Name.ToUpper()</a>
+                        </li>
+                    }
+                </menu>
             </nav>
             <nav>
                 <p style="font-weight: 900">SOCIAL</p>
-                <li style="display: inline; flex-direction: column; display: flex; gap: 5px">
-                    <a style="color: black; letter-spacing: 0.1rem; text-decoration: underline;" href="">Instagram</a>
-                    <a style="color: black; letter-spacing: 0.1rem; text-decoration: underline;" href="">Twitter</a>
-                    <a style="color: black; letter-spacing: 0.1rem; text-decoration: underline;" href="">Facebook</a>
-                    <a style="color: black; letter-spacing: 0.1rem; text-decoration: underline;" href="">Tiktok</a>
-                    <a style="color: black; letter-spacing: 0.1rem; text-decoration: underline;" href="/rss">RSS</a>
-                </li>
+                <menu style="display: inline; flex-direction: column; display: flex; gap: 10px;
+                    list-style-type: none; padding-left: 0px;">
+                    <li>
+                        <a class="dark-link" href="">Instagram</a>
+                    </li>
+                    <li>
+                        <a class="dark-link" href="">Twitter</a>
+                    </li>
+                    <li>
+                        <a class="dark-link" href="">Facebook</a>
+                    </li>
+                    <li>
+                        <a class="dark-link" href="">Tiktok</a>
+                    </li>
+                    <li>
+                        <a class="dark-link" href="/rss">RSS</a>
+                    </li>
+                </menu>
             </nav>
         </div>
         <p style="text-align: center; letter-spacing: 0.1rem; font-style: italic; font-weight: 100;">© 2026 Teknikern.

@@ -16,7 +16,7 @@
 	var defaultAvatar = siteSettings?.Value<MediaWithCrops>(alias: "defaultAvatar");
 }
 
-<a class="news-card" href="@Model.Url()">
+<a class="news-card light-link" href="@Model.Url()">
 	@if (thumbnail != null)
 	{
 		<img src="@thumbnail.Url()" alt="@title" loading="lazy" />
