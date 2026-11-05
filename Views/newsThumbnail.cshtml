@@ -48,12 +48,14 @@
 					if (headshot != null)
 					{
 						<img src="@headshot.Url()" height="32px" width="32px"
-								 style="border-radius: 100%; border: 1px solid #adad1f; flex-shrink: 0; object-fit: cover; padding: 2px; margin-right: 5px;" />
+								 style="border-radius: 100%; border: 1px solid #adad1f; flex-shrink: 0; object-fit: cover; padding: 2px; margin-right: 5px;"
+								 alt="Bild på författare: @string.Join(", ", authors.Select(author => author.Value<string>("fullName")))" />
 					}
 					else if (defaultAvatar != null)
 					{
 						<img src="@defaultAvatar.Url()" height="32px" width="32px"
-								 style="border-radius: 100%; border: 1px solid #adad1f; flex-shrink: 0; object-fit: cover; padding: 2px; margin-right: 5px;" />
+								 style="border-radius: 100%; border: 1px solid #adad1f; flex-shrink: 0; object-fit: cover; padding: 2px; margin-right: 5px;"
+								 alt="Bild på författare: @string.Join(", ", authors.Select(author => author.Value<string>("fullName")))" />
 					}
 				}
 				@string.Join(", ", authors.Select(author => author.Value<string>("fullName")))
