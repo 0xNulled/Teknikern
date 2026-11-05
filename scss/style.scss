@@ -32,18 +32,29 @@ body {
         line-height: 1.7;
     }
 
-    a {
+    .dark-link {
+        color: black;
+        letter-spacing: 0.1rem;
+        text-decoration: none;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+
+    .light-link {
         color: $text-color;
         text-decoration: none;
-    }
 
-    a:hover {
-        text-decoration: underline;
-        text-decoration-color: $accent-color;
-    }
+        &:hover {
+            text-decoration: underline;
+            text-decoration-color: $accent-color;
+        }
 
-    a:active {
-        color: $damped-accent-color;
+        &:active {
+            color: $damped-accent-color;
+        }
     }
 
     .news-list {

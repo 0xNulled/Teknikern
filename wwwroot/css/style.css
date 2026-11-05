@@ -21,15 +21,23 @@ body .news-article {
   margin-bottom: 15%;
   line-height: 1.7;
 }
-body a {
+body .dark-link {
+  color: black;
+  letter-spacing: 0.1rem;
+  text-decoration: none;
+}
+body .dark-link:hover {
+  text-decoration: underline;
+}
+body .light-link {
   color: #fff;
   text-decoration: none;
 }
-body a:hover {
+body .light-link:hover {
   text-decoration: underline;
   text-decoration-color: #e0e052;
 }
-body a:active {
+body .light-link:active {
   color: #adad1f;
 }
 body .news-list {
