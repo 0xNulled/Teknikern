@@ -11,6 +11,7 @@
 	var title = Model.Value<string>("title");
 	var excerpt = Model.Value<HtmlEncodedString>("breadtext");
 	var authors = Model.Value<IEnumerable<IPublishedContent>>("authors") ?? Enumerable.Empty<IPublishedContent>();
+	var authorName = authors.Select(author => author.Value<string>("fullName"));
 	var subjects = Model.Value<IEnumerable<IPublishedContent>>("subjectTags") ?? Enumerable.Empty<IPublishedContent>();
 	var defaultAvatar = siteSettings?.Value<MediaWithCrops>(alias: "defaultAvatar");
 }
@@ -44,21 +45,22 @@
 				foreach (var author in authors)
 				{
 					var headshot = author.Value<IPublishedContent>("headshot");
+					var currentAuthorName = author.Value<string>("fullName");
         
 					if (headshot != null)
 					{
 						<img src="@headshot.Url()" height="32px" width="32px"
 								 style="border-radius: 100%; border: 1px solid #adad1f; flex-shrink: 0; object-fit: cover; padding: 2px; margin-right: 5px;"
-								 alt="Bild på författare: @string.Join(", ", authors.Select(author => author.Value<string>("fullName")))" />
+								 alt="Bild på författare: @currentAuthorName" />
 					}
 					else if (defaultAvatar != null)
 					{
 						<img src="@defaultAvatar.Url()" height="32px" width="32px"
 								 style="border-radius: 100%; border: 1px solid #adad1f; flex-shrink: 0; object-fit: cover; padding: 2px; margin-right: 5px;"
-								 alt="Bild på författare: @string.Join(", ", authors.Select(author => author.Value<string>("fullName")))" />
+								 alt="Bild på författare: @currentAuthorName" />
 					}
 				}
-				@string.Join(", ", authors.Select(author => author.Value<string>("fullName")))
+				@string.Join(", ", authorName)
 			}
 		</span>
 	</div>
