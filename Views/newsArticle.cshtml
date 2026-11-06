@@ -1,12 +1,18 @@
-﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+﻿@using Teknikern.Controllers
+@inject Umbraco.Cms.Core.Security.IMemberManager MemberManager
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
 @{
 	Layout = "~/Views/Master.cshtml";
 	var image = Model.Value<Umbraco.Cms.Core.Models.PublishedContent.IPublishedContent>("thumbnail");
 	var authors = Model.Value<IEnumerable<IPublishedContent>>("authors") ?? Enumerable.Empty<IPublishedContent>();
 	var subjects = Model.Value<IEnumerable<IPublishedContent>>("subjectTags") ?? Enumerable.Empty<IPublishedContent>();
 	var articleId = Model.Id;
+	var isLoggedIn = Context.User.GetMemberIdentity()?.IsAuthenticated ?? false;
+	string? memberName = ((await MemberManager.GetCurrentMemberAsync())?.Name);
 
-
+	var allComments = Model.Children().Where(x => x.ContentType.Alias == "articleComment")
+	.OrderByDescending(x => x.Value<DateTime>("commentDate"));
+	var commentCount = Model.Children().Count(x => x.ContentType.Alias == "articleComment");
 }
 
 @if (subjects.Any())
@@ -50,20 +56,54 @@
 	@Model.Value("breadtext")
 </article>
 
-<div>
-	@{
-		<comment>@articleId</comment>
-	}
-</div>
-<div
-	style="margin-left: auto; margin-right: auto; display: flex; flex-direction: column; width: 50%; justify-content: center; align-items: center; gap: 10px; margin-bottom: 100px;">
-	<label>Kommentera denna artikeln</label>
-	<textarea class="comment-box" style="resize: none; width: 100%; height: 200px; font-size: 20px;"></textarea>
-	<button class="primary-btn">Skicka</button>
-</div>
+<div class="comments-section" style="width: 65%; margin: 40px auto;">
+	<h3>Comments (@commentCount)</h3>
 
-<style>
-	.comment-box:focus {
-		outline: 3px solid #e0e052;
+	@foreach (var comment in allComments)
+	{
+		<div class="comment-card" style="padding: 15px; border-radius: 4px; background: white; margin-bottom: 20px">
+			<p>
+				<strong style="color: black; text-decoration: underline;">@comment.Value("commentAuthor") kommenterade:</strong>
+
+			</p>
+			<p style="color: black">@comment.Value("commentContent")</p>
+			<p style="color: #666; font-size: 0.85em;">
+				@((comment.Value<DateTime?>("commentDate"))?.ToString("yyyy-MM-dd HH:mm"))
+			</p>
+		</div>
 	}
-</style>
+</div>
+@if (isLoggedIn)
+{
+	<div>
+		@using (Html.BeginUmbracoForm<CommentController>(nameof(CommentController.SubmitNewComment)))
+		{
+			<div style="display:flex; flex-direction: column; justify-content: center; align-items:center;">
+				<p>Kommentera inlägget</p>
+
+				<!-- Fylls automatiskt -->
+				<input type="hidden" name="Id" value="@Model.Id" />
+				<input type="hidden" name="Date" value="@DateTime.Now" />
+				<input type="hidden" name="Author" value="@memberName" />
+				<!-- Fylls automatiskt -->
+
+				<div style="margin-bottom: 5px;">
+					<textarea name="Content" rows="5" required
+										style="width: 50vw; resize: none; padding: 20px; font-size: 16px; border-radius: 4px;"></textarea>
+				</div>
+
+				<button type="submit" class="primary-btn" style="margin-top: 20px; margin-bottom: 50px">
+					Skicka kommentar
+				</button>
+			</div>
+		}
+	</div>
+}
+else
+{
+	<div
+		style="display:flex; flex-direction: column; justify-content: center; align-items:center; margin-bottom: 70px; margin-top: 100px;">
+		<a href="/logga-in">Logga in för att kommentera inlägget</a>
+	</div>
+	
+}
