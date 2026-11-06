@@ -1,0 +1,58 @@
+﻿@using Teknikern.Models
+@model NewsListViewModel
+
+@{
+    var currentPage = Model.CurrentPage > Model.TotalPages ? Model.TotalPages : Model.CurrentPage;
+    var pagedArticles = Model.Articles
+        .Skip((currentPage - 1) * Model.PageSize)
+        .Take(Model.PageSize)
+        .ToList();
+}
+
+<div id="news-list-container">
+    <div class="news-list" style="max-width: 1400px; margin-left: auto; margin-right: auto;">
+        @foreach (var article in pagedArticles)
+        {
+            @await Html.PartialAsync("~/Views/newsThumbnail.cshtml", article)
+        }
+    </div>
+
+    @if (Model.TotalPages > 1)
+    {
+        <nav class="pagination" style="display:flex; justify-content:center; align-items:center; gap:10px; margin: 30px 0;">
+            @if (currentPage > 1)
+            {
+                <a href="@(Model.ListingUrl)?page=@(currentPage - 1)"
+                   hx-get="/news-list?page=@(currentPage - 1)"
+                   hx-target="#news-list-container"
+                   hx-swap="outerHTML"
+                   hx-push-url="@(Model.ListingUrl)?page=@(currentPage - 1)">&laquo; Föregående</a>
+            }
+
+            @for (var i = 1; i <= Model.TotalPages; i++)
+            {
+                if (i == currentPage)
+                {
+                    <span style="font-weight: 800;">@i</span>
+                }
+                else
+                {
+                    <a href="@(Model.ListingUrl)?page=@i"
+                       hx-get="/news-list?page=@i"
+                       hx-target="#news-list-container"
+                       hx-swap="outerHTML"
+                       hx-push-url="@(Model.ListingUrl)?page=@i">@i</a>
+                }
+            }
+
+            @if (currentPage < Model.TotalPages)
+            {
+                <a href="@(Model.ListingUrl)?page=@(currentPage + 1)"
+                   hx-get="/news-list?page=@(currentPage + 1)"
+                   hx-target="#news-list-container"
+                   hx-swap="outerHTML"
+                   hx-push-url="@(Model.ListingUrl)?page=@(currentPage + 1)">Nästa &raquo;</a>
+            }
+        </nav>
+    }
+</div>
