@@ -31,22 +31,10 @@ namespace Teknikern.Controllers
                 .OrderByDescending(c => c.CreateDate)
                 .ToList();
 
-            const int pageSize = 9;
-            var currentPage = page > 0 ? page : 1;
-
-            var totalPages = Math.Max(1, (int)Math.Ceiling(articles.Count / (double)pageSize));
-            if (currentPage > totalPages) { currentPage = totalPages; }
-
-            var pagedArticles = articles
-                .Skip((currentPage - 1) * pageSize)
-                .Take(pageSize)
-                .ToList();
-
             var model = new NewsListViewModel
             {
-                Articles = pagedArticles,
-                CurrentPage = currentPage,
-                TotalPages = totalPages,
+                Articles = articles,
+                CurrentPage = page > 0 ? page : 1,
                 ListingUrl = newsPage.Url()
             };
 
@@ -54,5 +42,3 @@ namespace Teknikern.Controllers
         }
     }
 }
-
-

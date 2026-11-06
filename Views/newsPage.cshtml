@@ -14,23 +14,13 @@
 
     var promoText = siteSettings?.Value<string>("promoText");
 
-    const int pageSize = 9;
     var pageQuery = Context.Request.Query["page"].FirstOrDefault();
     var currentPage = int.TryParse(pageQuery, out var parsedPage) && parsedPage > 0 ? parsedPage : 1;
 
-    var totalPages = Math.Max(1, (int)Math.Ceiling(articles.Count / (double)pageSize));
-    if (currentPage > totalPages) { currentPage = totalPages; }
-
-    var pagedArticles = articles
-        .Skip((currentPage - 1) * pageSize)
-        .Take(pageSize)
-        .ToList();
-
     var newsListModel = new NewsListViewModel
     {
-        Articles = pagedArticles,
+        Articles = articles,
         CurrentPage = currentPage,
-        TotalPages = totalPages,
         ListingUrl = Model.Url()
     };
 }
@@ -52,4 +42,3 @@
 </div>
 
 @await Html.PartialAsync("~/Views/Partials/newsListPartial.cshtml", newsListModel)
-
