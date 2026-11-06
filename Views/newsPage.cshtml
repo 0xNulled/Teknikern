@@ -1,6 +1,4 @@
-﻿@using Humanizer
-@using Teknikern.Models
-@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
 @{
     Layout = "~/Views/Master.cshtml";
 
@@ -13,16 +11,6 @@
         .FirstOrDefault(x => x.ContentType.Alias == "siteSettings");
 
     var promoText = siteSettings?.Value<string>("promoText");
-
-    var pageQuery = Context.Request.Query["page"].FirstOrDefault();
-    var currentPage = int.TryParse(pageQuery, out var parsedPage) && parsedPage > 0 ? parsedPage : 1;
-
-    var newsListModel = new NewsListViewModel
-    {
-        Articles = articles,
-        CurrentPage = currentPage,
-        ListingUrl = Model.Url()
-    };
 }
 <div class="featured-article">
     @{
@@ -41,4 +29,4 @@
     <a href="/om-oss" class="dark-link" style="letter-spacing: 0.3rem;">LÄS MER</a>
 </div>
 
-@await Html.PartialAsync("~/Views/Partials/newsListPartial.cshtml", newsListModel)
+@await Html.PartialAsync("~/Views/Partials/newsListPartial.cshtml", Model)
