@@ -5,17 +5,17 @@ using Umbraco.Extensions;
 
 namespace Teknikern.Controllers
 {
-    public class NewsListController : Controller
+    public class PartialController : Controller
     {
         private readonly IPublishedContentQuery _publishedContentQuery;
 
-        public NewsListController(IPublishedContentQuery publishedContentQuery)
+        public PartialController(IPublishedContentQuery publishedContentQuery)
         {
             _publishedContentQuery = publishedContentQuery;
         }
 
         [Route("/news-list")]
-        public IActionResult Index(int page = 1)
+        public IActionResult NewsList(int page = 1)
         {
             var newsPage = _publishedContentQuery.ContentAtRoot()
                 .SelectMany(x => x.DescendantsOrSelf())
