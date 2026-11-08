@@ -1,0 +1,72 @@
+﻿@using Umbraco.Cms.Core.Models.PublishedContent
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedContent>
+@{
+    const int pageSize = 9;
+
+    var articles = Model.Children()
+        .Where(c => c.ContentType.Alias == "newsArticle")
+        .OrderByDescending(c => c.CreateDate)
+        .ToList();
+
+    var totalPages = Math.Max(1, (int)Math.Ceiling(articles.Count / (double)pageSize));
+
+    var pageQuery = Context.Request.Query["page"].FirstOrDefault();
+    var currentPage = int.TryParse(pageQuery, out var parsedPage)
+        ? Math.Clamp(parsedPage, 1, totalPages)
+        : 1;
+
+    var pagedArticles = articles
+        .Skip((currentPage - 1) * pageSize)
+        .Take(pageSize)
+        .ToList();
+
+    var listingUrl = Model.Url();
+}
+
+<div id="news-list-container">
+    <div class="news-list" style="max-width: 1400px; margin-left: auto; margin-right: auto;">
+        @foreach (var article in pagedArticles)
+        {
+            @await Html.PartialAsync("~/Views/newsThumbnail.cshtml", article)
+        }
+    </div>
+
+    @if (totalPages > 1)
+    {
+        <nav class="pagination" style="display:flex; justify-content:center; align-items:center; gap:10px; margin: 30px 0;">
+            @if (currentPage > 1)
+            {
+                <a class="light-link" href="@(listingUrl)?page=@(currentPage - 1)"
+                   hx-get="/news-list?page=@(currentPage - 1)"
+                   hx-target="#news-list-container"
+                   hx-swap="outerHTML"
+                   hx-push-url="@(listingUrl)?page=@(currentPage - 1)">&laquo; Föregående</a>
+            }
+
+            @for (var i = 1; i <= totalPages; i++)
+            {
+                if (i == currentPage)
+                {
+                    <span style="font-weight: 800;">@i</span>
+                }
+                else
+                {
+                    <a class="light-link" href="@(listingUrl)?page=@i"
+                       hx-get="/news-list?page=@i"
+                       hx-target="#news-list-container"
+                       hx-swap="outerHTML"
+                       hx-push-url="@(listingUrl)?page=@i">@i</a>
+                }
+            }
+
+            @if (currentPage < totalPages)
+            {
+                <a class="light-link" href="@(listingUrl)?page=@(currentPage + 1)"
+                   hx-get="/news-list?page=@(currentPage + 1)"
+                   hx-target="#news-list-container"
+                   hx-swap="outerHTML"
+                   hx-push-url="@(listingUrl)?page=@(currentPage + 1)">Nästa &raquo;</a>
+            }
+        </nav>
+    }
+</div>
