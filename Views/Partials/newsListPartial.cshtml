@@ -24,7 +24,7 @@
 }
 
 <div id="news-list-container">
-    <div class="news-list" style="max-width: 1400px; margin-left: auto; margin-right: auto;">
+    <div class="news-list" style="max-width: 1400px; margin: auto; padding: 5%">
         @foreach (var article in pagedArticles)
         {
             @await Html.PartialAsync("~/Views/newsThumbnail.cshtml", article)
@@ -36,10 +36,8 @@
         <nav class="pagination" style="display:flex; justify-content:center; align-items:center; gap:10px; margin: 30px 0;">
             @if (currentPage > 1)
             {
-                <a class="light-link" href="@(listingUrl)?page=@(currentPage - 1)"
-                   hx-get="/news-list?page=@(currentPage - 1)"
-                   hx-target="#news-list-container"
-                   hx-swap="outerHTML"
+                <a class="light-link" href="@(listingUrl)?page=@(currentPage - 1)" hx-get="/news-list?page=@(currentPage - 1)"
+                   hx-target="#news-list-container" hx-swap="outerHTML"
                    hx-push-url="@(listingUrl)?page=@(currentPage - 1)">&laquo; Föregående</a>
             }
 
@@ -51,20 +49,15 @@
                 }
                 else
                 {
-                    <a class="light-link" href="@(listingUrl)?page=@i"
-                       hx-get="/news-list?page=@i"
-                       hx-target="#news-list-container"
-                       hx-swap="outerHTML"
-                       hx-push-url="@(listingUrl)?page=@i">@i</a>
+                    <a class="light-link" href="@(listingUrl)?page=@i" hx-get="/news-list?page=@i" hx-target="#news-list-container"
+                       hx-swap="outerHTML" hx-push-url="@(listingUrl)?page=@i">@i</a>
                 }
             }
 
             @if (currentPage < totalPages)
             {
-                <a class="light-link" href="@(listingUrl)?page=@(currentPage + 1)"
-                   hx-get="/news-list?page=@(currentPage + 1)"
-                   hx-target="#news-list-container"
-                   hx-swap="outerHTML"
+                <a class="light-link" href="@(listingUrl)?page=@(currentPage + 1)" hx-get="/news-list?page=@(currentPage + 1)"
+                   hx-target="#news-list-container" hx-swap="outerHTML"
                    hx-push-url="@(listingUrl)?page=@(currentPage + 1)">Nästa &raquo;</a>
             }
         </nav>
