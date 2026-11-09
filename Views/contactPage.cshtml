@@ -1,0 +1,11 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+	Layout = "~/Views/Master.cshtml";
+	}
+	
+	
+	<h1 style="text-align:center;">@Model.Value("contactTitle")</h1>
+
+	<div style="text-align:center; max-width: 500px; margin: 2rem auto; line-height: 1.6;">
+		@Model.Value("contactText")
+	</div>

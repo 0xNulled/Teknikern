@@ -1,16 +1,17 @@
-﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+﻿@using Umbraco.Cms.Core.Models
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
 @{
 	Layout = "~/Views/Master.cshtml";
-	var picture = Model.Value<IPublishedContent>("picture");
+	var picture = Model.Value<MediaWithCrops>("picture");
 }
 
-<h1>@Model.Value("title")</h1>
+<h1 style="text-align: center;">@Model.Value("title")</h1>
 
-<p>@Model.Value("textin")</p>
+<p style="text-align: center; max-width: 800px; margin: 0 auto">@Model.Value("textin")</p>
 
 @{
 	if (picture != null)
 	{
-		<img src="@picture.Url()" />
+		<img src="@picture.GetCropUrl("aboutpicture")" style="display: block;margin: 2rem auto; max-width: min(100%, 800px);" />
 	}
 }
