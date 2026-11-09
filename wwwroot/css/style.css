@@ -130,6 +130,10 @@ body .primary-btn {
   letter-spacing: 0.1rem;
   cursor: pointer;
 }
+body .primary-btn:focus-visible {
+  outline: none;
+  border: 4px solid #ffffff;
+}
 body .primary-btn:hover {
   background-color: #adad1f;
 }
@@ -145,6 +149,10 @@ body .outline-btn {
   text-transform: uppercase;
   letter-spacing: 0.1rem;
   cursor: pointer;
+}
+body .outline-btn:focus-visible {
+  outline: none;
+  border: 4px solid #ffffff;
 }
 body .outline-btn:hover {
   background-color: #333309;
