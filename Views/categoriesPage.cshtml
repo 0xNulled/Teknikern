@@ -3,7 +3,7 @@
 @{
 	Layout = "~/Views/Master.cshtml";
 
-	var nyheter = Umbraco.ContentAtRoot().FirstOrDefault(x => x.Name == "Nyheter");
+	var nyheter = Umbraco.Content(Guid.Parse("eacaa63c-4ca1-4b6e-8bec-456daeee5bb1"));
 	var newsArticles = nyheter?.Children()
 			.Where(x => x.ContentType.Alias == "newsArticle")
 			?? Enumerable.Empty<IPublishedContent>();
