@@ -12,18 +12,6 @@
         .FirstOrDefault(x => x.ContentType.Alias == "siteSettings");
 
     var promoText = siteSettings?.Value<string>("promoText");
-
-    const int pageSize = 9;
-    var pageQuery = Context.Request.Query["page"].FirstOrDefault();
-    var currentPage = int.TryParse(pageQuery, out var parsedPage) && parsedPage > 0 ? parsedPage : 1;
-
-    var totalPages = Math.Max(1, (int)Math.Ceiling(articles.Count / (double)pageSize));
-    if (currentPage > totalPages) { currentPage = totalPages; }
-
-    var pagedArticles = articles
-        .Skip((currentPage - 1) * pageSize)
-        .Take(pageSize)
-        .ToList();
 }
 <div class="featured-article">
     @{
@@ -42,36 +30,4 @@
     <a href="/om-oss" class="dark-link" style="letter-spacing: 0.3rem;">LÄS MER</a>
 </div>
 
-<div class="news-list" style="max-width: 1200px; margin: auto; padding: 5%">
-    @foreach (var article in pagedArticles)
-    {
-        @await Html.PartialAsync("newsThumbnail", article)
-    }
-</div>
-
-@if (totalPages > 1)
-{
-    <nav class="pagination" style="display:flex; justify-content:center; align-items:center; gap:10px; margin: 30px 0;">
-        @if (currentPage > 1)
-        {
-            <a href="@(Model.Url())?page=@(currentPage - 1)">&laquo; Föregående</a>
-        }
-
-        @for (var i = 1; i <= totalPages; i++)
-        {
-            if (i == currentPage)
-            {
-                <span style="font-weight: 800;">@i</span>
-            }
-            else
-            {
-                <a href="@(Model.Url())?page=@i">@i</a>
-            }
-        }
-
-        @if (currentPage < totalPages)
-        {
-            <a href="@(Model.Url())?page=@(currentPage + 1)">Nästa &raquo;</a>
-        }
-    </nav>
-}
+@await Html.PartialAsync("~/Views/Partials/newsListPartial.cshtml", Model)
