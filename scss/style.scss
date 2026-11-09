@@ -185,4 +185,14 @@ body {
     .outline-btn[aria-pressed="true"] {
         background-color: $dark-accent-color
     }
+
+    .auth-buttons {
+        flex-direction: row;
+    }
+
+    @media screen and (min-width: 768px) {
+        .auth-buttons {
+            flex-direction: column;
+        }
+    }
 }

@@ -152,3 +152,11 @@ body .outline-btn:hover {
 body .outline-btn[aria-pressed=true] {
   background-color: #5e5e11;
 }
+body .auth-buttons {
+  flex-direction: row;
+}
+@media screen and (min-width: 768px) {
+  body .auth-buttons {
+    flex-direction: column;
+  }
+}

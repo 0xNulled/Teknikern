@@ -26,6 +26,7 @@
     <meta charset="utf-8">
     <title>@Model.Name</title>
     <link rel="stylesheet" href="/css/style.css">
+    <meta name="viewport" content="width=device-width" />
     <script src="/js/htmx.min.js"></script>
     @RenderSection("Head", required: false)
 </head>
@@ -33,86 +34,85 @@
 <body>
     <header
         style="text-align: center; border-bottom: 1px solid #3d3d3d; width: 90%; margin-right: auto; margin-left: auto; padding-bottom: 10px;">
-        @if (siteLogo != null)
-        {
-            <a href="/" style="display: inline-block;">
-                <img src="@siteLogo.Url()" alt="Teknikerns logga" style="margin-bottom: 20px; margin-top: 20px;">
-            </a>
-        }
-        @if (isLoggedIn)
-        {
-            <button class="primary-btn" onclick="window.location.href='/min-profil'"
-                    style="margin-top: 10px; position: absolute;">Profil</button>
-        }
-        else
-        {
-            <button class="primary-btn" onclick="window.location.href='/logga-in'"
-                    style="margin-top: 10px; position: absolute;">Logga
-                in</button>
-                <button class="primary-btn" onclick="window.location.href='/registrera-dig'"
-                        style="margin-top: 10px; position: absolute; top: 60px;">Registrera
-                    dig</button>
-                }
-        <nav style="border-top: 1px solid #3d3d3d; padding-top: 10px;">
-            <menu style="margin: 0">
-                @foreach (var item in selection)
+        <div style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; margin-bottom: 15px;">
+            
+            @if (siteLogo != null)
+            {
+                <a href="/" style="display: inline-block; max-width: 100%;">
+                    <img src="@siteLogo.Url()" alt="Teknikerns logga"
+                         style="display: block; margin: 20px auto 20px auto; max-width: 100%">
+                </a>
+            }
+
+            <div class="auth-buttons" style="display: flex; flex-wrap: wrap; transform: translate(0, -10px)">
+                @if (isLoggedIn)
                 {
-                    <li style="display: inline; margin-left: 5px; margin-right: 5px">
-                        <a class="light-link" href="@item.Url()">@item.Name().ToUpper()</a>
-                    </li>
+                    <button class="primary-btn" onclick="window.location.href='/min-profil'">Profil</button>
                 }
-            </menu>
-        </nav>
-            </header>
+                else
+                {
+                    <button class="primary-btn" onclick="window.location.href='/logga-in'">Logga
+                        in</button>
+                        <button class="primary-btn" onclick="window.location.href='/registrera-dig'">Registrera dig</button>
+                    }
+                </div>
 
-            <main style="flex: 1;">
-                @RenderBody()
-            </main>
-
-    <footer>
-        <div class="promo-box"
-             style="background-color:white; color: black; gap:200px; min-height: 300px; clip-path: polygon(0 50px, 100% 0, 100% 250px, 0 100%); display: flex; align-items: center; flex-direction: row; justify-content: center;">
-            <p style="font-weight: 800; text-align: center; width:300px; letter-spacing: 0.1rem;">@promoText
-            </p>
-            <nav>
-                <p style="font-weight: 900">NAVIGATION</p>
-                <menu style="display: inline; flex-direction: column; display: flex; gap: 10px;
-                    list-style-type: none; padding-left: 0px;">
+            </div>
+            <nav style="border-top: 1px solid #3d3d3d; padding-top: 10px;">
+                <menu style="margin: 0; padding: 0;">
                     @foreach (var item in selection)
                     {
-                        <li>
-                            <a class="dark-link" href=" @item.Url()">@item.Name.ToUpper()</a>
+                        <li style="display: inline; margin-left: 5px; margin-right: 5px;">
+                            <a class="light-link" href="@item.Url()">@item.Name().ToUpper()</a>
                         </li>
                     }
                 </menu>
             </nav>
-            <nav>
-                <p style="font-weight: 900">SOCIAL</p>
-                <menu style="display: inline; flex-direction: column; display: flex; gap: 10px;
-                    list-style-type: none; padding-left: 0px;">
-                    <li>
-                        <a class="dark-link" href="">Instagram</a>
-                    </li>
-                    <li>
-                        <a class="dark-link" href="">Twitter</a>
-                    </li>
-                    <li>
-                        <a class="dark-link" href="">Facebook</a>
-                    </li>
-                    <li>
-                        <a class="dark-link" href="">Tiktok</a>
-                    </li>
-                    <li>
-                        <a class="dark-link" href="/rss">RSS</a>
-                    </li>
-                </menu>
-            </nav>
-        </div>
-        <p style="text-align: center; letter-spacing: 0.1rem; font-style: italic; font-weight: 100;">© 2026 Teknikern.
-            Made with
-            Umbraco.</p>
+        </header>
+
+        <main style="flex: 1;">
+            @RenderBody()
+        </main>
+
+        <footer>
+            <div class="promo-box"
+                 style="background-color: white; color: black; gap: 20%; min-height: 300px; padding: 60px 20px; clip-path: polygon(0 30px, 100% 0, 100% calc(100% - 30px), 0 100%); display: flex; align-items: center; flex-direction: row; flex-wrap: wrap; justify-content: center;">
+        
+                <p style="font-weight: 800; max-width: 300px; letter-spacing: 0.1rem; margin: 0; text-align: center;">
+                    @promoText
+                </p>
+
+                <nav>
+                    <p style="font-weight: 900; margin-bottom: 10px;">NAVIGATION</p>
+                    <menu
+                        style="display: flex; flex-direction: column; gap: 10px; list-style-type: none; padding-left: 0px; margin: 0;">
+                        @foreach (var item in selection)
+                        {
+                            <li>
+                                <a class="dark-link" href="@item.Url()">@item.Name.ToUpper()</a>
+                            </li>
+                        }
+                    </menu>
+                </nav>
+
+                <nav>
+                    <p style="font-weight: 900; margin-bottom: 10px;">SOCIAL</p>
+                    <menu
+                        style="display: flex; flex-direction: column; gap: 10px; list-style-type: none; padding-left: 0px; margin: 0;">
+                        <li><a class="dark-link" href="">Instagram</a></li>
+                        <li><a class="dark-link" href="">Twitter</a></li>
+                        <li><a class="dark-link" href="">Facebook</a></li>
+                        <li><a class="dark-link" href="">Tiktok</a></li>
+                        <li><a class="dark-link" href="/rss">RSS</a></li>
+                    </menu>
+                </nav>
+            </div>
+
+            <p style="text-align: center; letter-spacing: 0.1rem; font-style: italic; font-weight: 100; margin-top: 20px;">
+                © 2026 Teknikern. Made with Umbraco.
+            </p>
         </footer>
 
-            </body>
+    </body>
 
-        </html>
+</html>

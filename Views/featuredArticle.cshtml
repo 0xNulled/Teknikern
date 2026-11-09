@@ -4,7 +4,7 @@
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<IPublishedContent>
 @{
   var siteSettings = Umbraco.ContentAtRoot()
-    .FirstOrDefault(x => x.ContentType.Alias == "siteSettings");
+      .FirstOrDefault(x => x.ContentType.Alias == "siteSettings");
     
   var thumbnail = Model.Value<MediaWithCrops>("thumbnail");
   var title = Model.Value<string>("title");
@@ -12,16 +12,16 @@
   var authors = Model.Value<IEnumerable<IPublishedContent>>("authors") ?? Enumerable.Empty<IPublishedContent>();
   var subjects = Model.Value<IEnumerable<IPublishedContent>>("subjectTags") ?? Enumerable.Empty<IPublishedContent>();
   var defaultAvatar = siteSettings?.Value<MediaWithCrops>(alias: "defaultAvatar");
-
 }
-<div style="display: flex; flex-direction: grid;">
 
-  <a class="light-link" style="width: 50%; margin-top: 100px; margin-left: 50px" href="@Model.Url()">
+<div
+  style="display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 30px; padding: 20px; max-width: 1200px; margin: 40px auto;">
 
+  <a class="light-link" style="flex: 1; min-width: 280px; text-decoration: none;" href="@Model.Url()">
     <div class="news-card__body">
       @if (subjects.Any())
       {
-        <div class="news-card__tags">
+        <div class="news-card__tags" style="margin-bottom: 10px;">
           @foreach (var subject in subjects)
           {
             <span class="tag">@(subject.Value<string>("subject"))</span>
@@ -29,14 +29,14 @@
         </div>
       }
 
-      <h2>@title</h2>
+      <h2 style="margin-bottom: 15px;">@title</h2>
 
       @if (excerpt != null)
       {
-        <div class="news-card__excerpt">@excerpt</div>
+        <div class="news-card__excerpt" style="margin-bottom: 15px;">@excerpt</div>
       }
 
-      <span class="news-card__author">
+      <span class="news-card__author" style="display: flex; align-items: center; flex-wrap: wrap; gap: 5px;">
         @{
           foreach (var author in authors)
           {
@@ -45,15 +45,15 @@
             if (headshot != null)
             {
               <img src="@headshot.Url()" height="32px" width="32px"
-                   style="border-radius: 100%; border: 1px solid #adad1f; flex-shrink: 0; object-fit: cover; padding: 2px; margin-right: 5px;" />
+                   style="border-radius: 100%; border: 1px solid #adad1f; flex-shrink: 0; object-fit: cover; padding: 2px;" />
             }
             else if (defaultAvatar != null)
             {
               <img src="@defaultAvatar.Url()" height="32px" width="32px"
-                   style="border-radius: 100%; border: 1px solid #adad1f; flex-shrink: 0; object-fit: cover; padding: 2px; margin-right: 5px;" />
+                   style="border-radius: 100%; border: 1px solid #adad1f; flex-shrink: 0; object-fit: cover; padding: 2px;" />
             }
           }
-          @string.Join(", ", authors.Select(author => author.Value<string>("fullName")))
+          <span>@string.Join(", ", authors.Select(author => author.Value<string>("fullName")))</span>
         }
       </span>
     </div>
@@ -61,6 +61,9 @@
 
   @if (thumbnail != null)
   {
-    <img src="@thumbnail.Url()" alt="@title" style="margin: 75px; max-height: 300px; max-width: 500px;" />
+    <div style="flex: 1; min-width: 280px; text-align: center;">
+      <img src="@thumbnail.Url()" alt="@title"
+           style="width: 100%; max-width: 500px; height: auto; max-height: 300px; object-fit: cover;" />
+    </div>
   }
 </div>
