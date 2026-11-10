@@ -15,13 +15,12 @@
     var promoText = siteSettings?.Value<string>("promoText");
 }
 <div class="featured-article">
-    @{
-        Random randomNumber = new Random();
-        int randomArticle = randomNumber.Next(0, articles.Count);
+    @if (articles.Count > 0)
+    {
+        var randomArticle = Random.Shared.Next(articles.Count);
+
+        @await Html.PartialAsync("featuredArticle", articles[randomArticle])
     }
-
-    @await Html.PartialAsync("featuredArticle", articles[randomArticle])
-
 </div>
 <div class="promo-box"
      style="background-color:white; color: black; min-height: 300px; clip-path: polygon(0 40px, 100% 0, 100% 250px, 0 100%); display: flex; align-items: center; flex-direction: column; justify-content: center;">
@@ -32,7 +31,7 @@
 </div>
 
 <div class="news-list" style="max-width: 1400px; margin-left: auto; margin-right: auto;">
-    @for (var i = 0; i < MAX_ARTICLES; i++)
+    @for (var i = 0; i < Math.Min(MAX_ARTICLES, articles.Count); i++)
     {
         <div class="news-list__item">
             @await Html.PartialAsync("newsThumbnail", articles[i])

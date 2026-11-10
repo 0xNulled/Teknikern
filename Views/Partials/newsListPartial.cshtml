@@ -7,7 +7,7 @@
 
     var articles = Model.Children()
         .Where(c => c.ContentType.Alias == "newsArticle")
-        .OrderBy(c => c.Url())
+        .OrderByDescending(c => c.CreateDate)
         .ToList();
 
     if (!string.IsNullOrEmpty(selectedTag))
