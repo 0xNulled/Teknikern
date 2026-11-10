@@ -3,6 +3,7 @@
 @inject Umbraco.Cms.Core.Services.IMemberService MemberService
 @inject Umbraco.Cms.Core.Services.IMediaService MediaService
 @using Teknikern.Controllers
+@using Teknikern.Utils
 @using Umbraco.Cms.Core.Models
 @using Umbraco.Cms.Web.Common.Models
 @using Umbraco.Cms.Web.Website.Controllers
@@ -11,7 +12,8 @@
 	Layout = "~/Views/Master.cshtml";
 	var siteSettings = Umbraco.ContentAtRoot()
 			.FirstOrDefault(x => x.ContentType.Alias == "siteSettings");
-	var defaultAvatar = siteSettings?.Value<MediaWithCrops>(alias: "defaultAvatar");
+	var defaultAvatar = siteSettings?.Value<MediaWithCrops>("defaultAvatar");
+	var defaultAvatarUrl = defaultAvatar?.Url();
 
 	var isLoggedIn = Context.User.GetMemberIdentity()?.IsAuthenticated ?? false;
 	var logoutModel = new PostRedirectModel();
@@ -22,30 +24,10 @@
 		: null;
 
 	var memberName = member?.Name;
-	var memberEmail = member?.Email;
+	var memberEmail = member!.Email;
 
-	var rawImage = member?.GetValue<string>("profilePicture");
-	string? imageUrl = null;
-
-	if (!string.IsNullOrEmpty(rawImage))
-	{
-		using var json = System.Text.Json.JsonDocument.Parse(rawImage);
-
-		var mediaKey = json.RootElement[0]
-				.GetProperty("mediaKey")
-				.GetGuid();
-
-		var media = MediaService.GetById(mediaKey);
-
-		var rawFile = media?.GetValue<string>("umbracoFile");
-
-		if (!string.IsNullOrEmpty(rawFile))
-		{
-			using var fileJson = System.Text.Json.JsonDocument.Parse(rawFile);
-
-			imageUrl = fileJson.RootElement.GetProperty("src").GetString();
-		}
-	}
+	var imageUrl = MemberAvatarUtil.GetProfilePictureUrl(MemberService.GetByEmail(memberEmail), MediaService)
+											 ?? defaultAvatarUrl;
 }
 
 
@@ -62,7 +44,7 @@
 				}
 				else
 				{
-					<img src="@defaultAvatar!.Url()" alt="Profile picture"
+					<img src="@defaultAvatarUrl" alt="Profile picture"
 							 style="width: 150px; height: 150px; object-fit: cover; border-radius:50%;" />
 				}
 				

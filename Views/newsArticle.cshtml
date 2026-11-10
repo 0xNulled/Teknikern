@@ -1,14 +1,23 @@
 ﻿@using Teknikern.Controllers
+@using Teknikern.Utils
+@using Umbraco.Cms.Core.Models
 @inject Umbraco.Cms.Core.Security.IMemberManager MemberManager
+@inject Umbraco.Cms.Core.Services.IMemberService MemberService
+@inject Umbraco.Cms.Core.Services.IMediaService MediaService
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
 @{
 	Layout = "~/Views/Master.cshtml";
+	var siteSettings = Umbraco.ContentAtRoot()
+		.FirstOrDefault(x => x.ContentType.Alias == "siteSettings");
+	var defaultAvatar = siteSettings?.Value<MediaWithCrops>("defaultAvatar");
+	var defaultAvatarUrl = defaultAvatar?.Url();
 	var image = Model.Value<Umbraco.Cms.Core.Models.PublishedContent.IPublishedContent>("thumbnail");
 	var authors = Model.Value<IEnumerable<IPublishedContent>>("authors") ?? Enumerable.Empty<IPublishedContent>();
 	var subjects = Model.Value<IEnumerable<IPublishedContent>>("subjectTags") ?? Enumerable.Empty<IPublishedContent>();
 	var articleId = Model.Id;
 	var isLoggedIn = Context.User.GetMemberIdentity()?.IsAuthenticated ?? false;
 	string? memberName = ((await MemberManager.GetCurrentMemberAsync())?.Name);
+	string? memberEmail = ((await MemberManager.GetCurrentMemberAsync())?.Email);
 
 	var allComments = Model.Children().Where(x => x.ContentType.Alias == "articleComment")
 	.OrderByDescending(x => x.Value<DateTime>("commentDate"));
@@ -61,10 +70,19 @@
 
 	@foreach (var comment in allComments)
 	{
+		var email = comment.Value<string>("commentAuthorEmail");
+		var authorMember = !string.IsNullOrEmpty(email) ? MemberService.GetByEmail(email) : null;
+		var authorImageUrl = MemberAvatarUtil.GetProfilePictureUrl(authorMember, MediaService)
+												 ?? defaultAvatarUrl;
+
 		<div class="comment-card" style="padding: 15px; border-radius: 4px; background: white; margin-bottom: 20px">
 			<p>
+				@if (!string.IsNullOrEmpty(authorImageUrl))
+				{
+					<img src="@authorImageUrl" alt="@comment.Value("commentAuthor")" width="64" height="64"
+							 style="border-radius: 100%; border: 1px solid #adad1f; vertical-align: middle; margin-right: 5px; object-fit: cover;" />
+				}
 				<strong style="color: black; text-decoration: underline;">@comment.Value("commentAuthor") kommenterade:</strong>
-
 			</p>
 			<p style="color: black">@comment.Value("commentContent")</p>
 			<p style="color: #666; font-size: 0.85em;">
@@ -85,6 +103,7 @@
 				<input type="hidden" name="Id" value="@Model.Id" />
 				<input type="hidden" name="Date" value="@DateTime.Now" />
 				<input type="hidden" name="Author" value="@memberName" />
+				<input type="hidden" name="AuthorEmail" value="@memberEmail" />
 				<!-- Fylls automatiskt -->
 
 				<div style="margin-bottom: 5px;">

@@ -64,7 +64,6 @@ public class MemberProfileController : SurfaceController
     if (profilePicture == null || profilePicture.Length == 0)
       return RedirectToCurrentUmbracoPage();
 
-    // Limit upload size to 5 MB
     if (profilePicture.Length > 5 * 1024 * 1024)
       return RedirectToCurrentUmbracoPage();
 
@@ -74,19 +73,16 @@ public class MemberProfileController : SurfaceController
     if (!allowedTypes.Contains(extension))
       return RedirectToCurrentUmbracoPage();
 
-    // Get the actual Umbraco member
     var member = _memberService.GetByEmail(currentUser.Email!);
 
     if (member == null)
       return Unauthorized();
 
-    // Create media item
     var media = _mediaService.CreateMedia(
         Path.GetFileNameWithoutExtension(profilePicture.FileName),
         Constants.System.Root,
         Constants.Conventions.MediaTypes.Image);
 
-    // Save uploaded image to Umbraco Media Library
     using (var stream = profilePicture.OpenReadStream())
     {
       media.SetValue(
@@ -104,7 +100,6 @@ public class MemberProfileController : SurfaceController
     if (!mediaResult.Success)
       return RedirectToCurrentUmbracoPage();
 
-    // Set Media Picker 3 value
     var pickerValue = JsonSerializer.Serialize(new[]
     {
             new

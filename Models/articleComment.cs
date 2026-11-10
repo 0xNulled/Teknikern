@@ -8,6 +8,9 @@ namespace Teknikern.Models
     [Required(ErrorMessage = "Please enter an author.")]
     public string Author { get; set; }
 
+    [Required(ErrorMessage = "Please enter an authors email.")]
+    public string AuthorEmail { get; set; }
+
     [Required(ErrorMessage = "Please enter your comment.")]
     public string Content { get; set; }
 
