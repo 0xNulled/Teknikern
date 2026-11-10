@@ -32,7 +32,7 @@
 			var subjectTagKeys = string.Join(",", subjectTags.Select(tag => tag.Key.ToString("N")));
 
 			<div class="news-list__item" data-subject-tags="@subjectTagKeys">
-				@await Html.PartialAsync("newsThumbnail", article)
+				@await Html.PartialAsync("newsListPartial", article)
 			</div>
 		}
 	</div>

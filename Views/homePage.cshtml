@@ -2,6 +2,8 @@
 @{
     Layout = "~/Views/Master.cshtml";
 
+    const int MAX_ARTICLES = 8;
+
     var articles = Model.Children()
         .Where(c => c.ContentType.Alias == "newsArticle")
         .OrderByDescending(c => c.CreateDate)
@@ -29,4 +31,11 @@
     <a href="/om-oss" class="dark-link" style="letter-spacing: 0.3rem;">LÄS MER</a>
 </div>
 
-@await Html.PartialAsync("~/Views/Partials/newsListPartial.cshtml", Model)
+<div class="news-list" style="max-width: 1400px; margin-left: auto; margin-right: auto;">
+    @for (var i = 0; i < MAX_ARTICLES; i++)
+    {
+        <div class="news-list__item">
+            @await Html.PartialAsync("newsThumbnail", articles[i])
+        </div>
+    }
+</div>
