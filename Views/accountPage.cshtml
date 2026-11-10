@@ -1,30 +1,88 @@
 ﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
-
+@inject Umbraco.Cms.Core.Security.IMemberManager MemberManager
+@inject Umbraco.Cms.Core.Services.IMemberService MemberService
+@inject Umbraco.Cms.Core.Services.IMediaService MediaService
+@using Umbraco.Cms.Core.Models
 @using Umbraco.Cms.Web.Common.Models
 @using Umbraco.Cms.Web.Website.Controllers
 @using Umbraco.Extensions
-
 @{
 	Layout = "~/Views/Master.cshtml";
+	var siteSettings = Umbraco.ContentAtRoot()
+			.FirstOrDefault(x => x.ContentType.Alias == "siteSettings");
+	var defaultAvatar = siteSettings?.Value<MediaWithCrops>(alias: "defaultAvatar");
+
 	var isLoggedIn = Context.User.GetMemberIdentity()?.IsAuthenticated ?? false;
 	var logoutModel = new PostRedirectModel();
-	// You can modify this to redirect to a different URL instead of the current one
 	logoutModel.RedirectUrl = "/";
+	var currentUser = await MemberManager.GetCurrentMemberAsync();
+	var member = currentUser != null
+		? MemberService.GetByEmail(currentUser.Email!)
+		: null;
+
+	var memberName = member?.Name;
+	var memberEmail = member?.Email;
+
+	var rawImage = member?.GetValue<string>("profilePicture");
+	string? imageUrl = null;
+
+	if (!string.IsNullOrEmpty(rawImage))
+	{
+		using var json = System.Text.Json.JsonDocument.Parse(rawImage);
+
+		var mediaKey = json.RootElement[0]
+				.GetProperty("mediaKey")
+				.GetGuid();
+
+		var media = MediaService.GetById(mediaKey);
+
+		var rawFile = media?.GetValue<string>("umbracoFile");
+
+		if (!string.IsNullOrEmpty(rawFile))
+		{
+			using var fileJson = System.Text.Json.JsonDocument.Parse(rawFile);
+
+			imageUrl = fileJson.RootElement.GetProperty("src").GetString();
+		}
+	}
 }
+
 
 @if (isLoggedIn)
 {
-	<div style="display: flex; align-items: center; min-height: 50vh; flex-direction: column; margin-top: 100px">
-
-		<p>Profilsida för: <strong>@Context.User?.GetMemberIdentity()?.Name</strong>!</p>
-
-		@using (Html.BeginUmbracoForm<UmbLoginStatusController>("HandleLogout", new
-		{
-			RedirectUrl = logoutModel.RedirectUrl
-		}))
-		{
-			<button type="submit" class="primary-btn">Logga ut</button>
-		}
-
-	</div>
-}
+	<div style="display: flex; align-items: center; justify-content: center;">
+		<div
+			style="display: flex; align-items: center; max-height: 50vh; margin: 50px; border: solid white 1px; width: 500px; padding: 20px; position: relative;">
+			<section style="position: relative;">
+				@if (!string.IsNullOrEmpty(imageUrl))
+				{
+					<img src="@imageUrl" alt="Profile picture"
+							 style="width: 150px; height: 150px; object-fit: cover; border-radius:50%;" />
+				}
+				else
+				{
+					<img src="@defaultAvatar!.Url()" alt="Profile picture"
+							 style="width: 150px; height: 150px; object-fit: cover; border-radius:50%;" />
+				}
+				<div
+					style="width: 32px; height: 32px; background: black; border-radius:50%; position: absolute; bottom: 5px; right: 5px; border: solid 1px white;">
+					<p style="margin: 0; font-size: 24px; text-align: center;">&#x1F58A;</p>
+				</div>
+			</section>
+			<section style=" margin:20px;">
+				<p><strong>@memberName</strong></p>
+				<p><strong>@Context.User?.GetMemberIdentity()?.Name</strong></p>
+				<section style="position: absolute; bottom: 15px; right: 15px;">
+					@using (Html.BeginUmbracoForm<UmbLoginStatusController>("HandleLogout", new
+					{
+						RedirectUrl = logoutModel.RedirectUrl
+					}))
+					{
+						<button type="submit" class="primary-btn">
+							Logga ut
+						</button>
+					}
+				</section>
+			</div>
+		</div>
+	}
