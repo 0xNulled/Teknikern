@@ -1,33 +1,65 @@
-﻿@using Humanizer
+﻿@using Umbraco.Cms.Core.Models.PublishedContent
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
 @{
-    Layout = "~/Views/Master.cshtml";
+	Layout = "~/Views/Master.cshtml";
 
-    var articles = Model.Children()
-        .Where(c => c.ContentType.Alias == "newsArticle")
-        .OrderByDescending(c => c.CreateDate)
-        .ToList();
+	var nyheter = Umbraco.Content(Guid.Parse("eacaa63c-4ca1-4b6e-8bec-456daeee5bb1"));
+	var newsArticles = nyheter?.Children()
+			.Where(x => x.ContentType.Alias == "newsArticle")
+			?? Enumerable.Empty<IPublishedContent>();
 
-    var siteSettings = Umbraco.ContentAtRoot()
-        .FirstOrDefault(x => x.ContentType.Alias == "siteSettings");
-
-    var promoText = siteSettings?.Value<string>("promoText");
+	var tagFolder = nyheter?.Children().FirstOrDefault(x => x.Name == "Nyhetsämnen Mapp");
+	var tags = tagFolder?.Children().ToList() ?? new List<IPublishedContent>();
 }
-<div class="featured-article">
-    @{
-        Random randomNumber = new Random();
-        int randomArticle = randomNumber.Next(0, articles.Count);
-    }
 
-    @await Html.PartialAsync("featuredArticle", articles[randomArticle])
+<section class="articles">
+	<div class="category_title"
+			 style="margin-top: 20px; display:flex; gap: 10px; justify-items: center; justify-content: center;">
+		<button class="outline-btn" type="button" data-tag-key="" aria-pressed="true">Alla</button>
+		@foreach (var tag in tags)
+		{
+			<button class="outline-btn" type="button" data-tag-key="@tag.Key.ToString("N")" aria-pressed="false">
+				@(tag.Value<string>("subject") ?? tag.Name)
+			</button>
+		}
+	</div>
 
-</div>
-<div class="promo-box"
-     style="background-color:white; color: black; min-height: 300px; clip-path: polygon(0 40px, 100% 0, 100% 250px, 0 100%); display: flex; align-items: center; flex-direction: column; justify-content: center;">
-    <p style="font-weight: 800; text-align: center; max-width:500px; letter-spacing: 0.1rem;">
-        @promoText
-    </p>
-    <a href="/om-oss" class="dark-link" style="letter-spacing: 0.3rem;">LÄS MER</a>
-</div>
+	<div class="news-list" style="max-width: 1400px; margin-left: auto; margin-right: auto;">
+		@foreach (var article in newsArticles)
+		{
+			var subjectTags = article.Value<IEnumerable<IPublishedContent>>("subjectTags")
+				?? Enumerable.Empty<IPublishedContent>();
+			var subjectTagKeys = string.Join(",", subjectTags.Select(tag => tag.Key.ToString("N")));
 
-@await Html.PartialAsync("~/Views/Partials/newsListPartial.cshtml", Model)
+			<div class="news-list__item" data-subject-tags="@subjectTagKeys">
+				@await Html.PartialAsync("newsThumbnail", article)
+			</div>
+		}
+	</div>
+</section>
+
+<style>
+	.news-list__item[hidden] {
+		display: none;
+	}
+</style>
+
+<script>
+	const categoryButtons = document.querySelectorAll(".category_title [data-tag-key]");
+	const articleCards = document.querySelectorAll(".news-list__item");
+
+	categoryButtons.forEach(button => {
+		button.addEventListener("click", () => {
+			const selectedTagKey = button.dataset.tagKey;
+
+			articleCards.forEach(card => {
+				const subjectTagKeys = card.dataset.subjectTags.split(",");
+				card.hidden = selectedTagKey !== "" && !subjectTagKeys.includes(selectedTagKey);
+			});
+
+			categoryButtons.forEach(categoryButton => {
+				categoryButton.setAttribute("aria-pressed", String(categoryButton === button));
+			});
+		});
+	});
+</script>
