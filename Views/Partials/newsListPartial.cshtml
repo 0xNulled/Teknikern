@@ -27,7 +27,7 @@
     <div class="news-list" style="max-width: 1400px; margin: auto; padding: 5%">
         @foreach (var article in pagedArticles)
         {
-            @await Html.PartialAsync("~/Views/newsThumbnail.cshtml", article)
+            @await Html.PartialAsync("newsThumbnail", article)
         }
     </div>
 
