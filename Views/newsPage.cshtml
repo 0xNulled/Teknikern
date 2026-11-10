@@ -4,62 +4,32 @@
 	Layout = "~/Views/Master.cshtml";
 
 	var nyheter = Umbraco.Content(Guid.Parse("eacaa63c-4ca1-4b6e-8bec-456daeee5bb1"));
-	var newsArticles = nyheter?.Children()
-			.Where(x => x.ContentType.Alias == "newsArticle")
-			?? Enumerable.Empty<IPublishedContent>();
 
 	var tagFolder = nyheter?.Children().FirstOrDefault(x => x.Name == "Nyhetsämnen Mapp");
 	var tags = tagFolder?.Children().ToList() ?? new List<IPublishedContent>();
+
+	var listingUrl = Context.Request.Path.ToString();
+	var selectedTag = Context.Request.Query["tag"].FirstOrDefault();
 }
 
 <section class="articles">
 	<div class="category_title"
 			 style="margin-top: 20px; display:flex; gap: 10px; justify-items: center; justify-content: center;">
-		<button class="outline-btn" type="button" data-tag-key="" aria-pressed="true">Alla</button>
+		<a class="outline-btn" href="@listingUrl" aria-pressed="@(string.IsNullOrEmpty(selectedTag) ? "true" : "false")"
+			 style="text-decoration: none;">Alla</a>
 		@foreach (var tag in tags)
 		{
-			<button class="outline-btn" type="button" data-tag-key="@tag.Key.ToString("N")" aria-pressed="false">
+			var tagKey = tag.Key.ToString("N");
+
+			<a class="outline-btn" href="@(listingUrl)?tag=@tagKey" aria-pressed="@(selectedTag == tagKey ? "true" : "false")"
+				 style="text-decoration: none;">
 				@(tag.Value<string>("subject") ?? tag.Name)
-			</button>
+			</a>
 		}
 	</div>
 
-	<div class="news-list" style="max-width: 1400px; margin-left: auto; margin-right: auto;">
-		@foreach (var article in newsArticles)
-		{
-			var subjectTags = article.Value<IEnumerable<IPublishedContent>>("subjectTags")
-				?? Enumerable.Empty<IPublishedContent>();
-			var subjectTagKeys = string.Join(",", subjectTags.Select(tag => tag.Key.ToString("N")));
-
-			<div class="news-list__item" data-subject-tags="@subjectTagKeys">
-				@await Html.PartialAsync("newsListPartial", article)
-			</div>
-		}
-	</div>
-</section>
-
-<style>
-	.news-list__item[hidden] {
-		display: none;
+	@if (nyheter != null)
+	{
+		@await Html.PartialAsync("newsListPartial", nyheter)
 	}
-</style>
-
-<script>
-	const categoryButtons = document.querySelectorAll(".category_title [data-tag-key]");
-	const articleCards = document.querySelectorAll(".news-list__item");
-
-	categoryButtons.forEach(button => {
-		button.addEventListener("click", () => {
-			const selectedTagKey = button.dataset.tagKey;
-
-			articleCards.forEach(card => {
-				const subjectTagKeys = card.dataset.subjectTags.split(",");
-				card.hidden = selectedTagKey !== "" && !subjectTagKeys.includes(selectedTagKey);
-			});
-
-			categoryButtons.forEach(categoryButton => {
-				categoryButton.setAttribute("aria-pressed", String(categoryButton === button));
-			});
-		});
-	});
-</script>
+</section>
