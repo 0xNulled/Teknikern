@@ -2,6 +2,7 @@
 @inject Umbraco.Cms.Core.Security.IMemberManager MemberManager
 @inject Umbraco.Cms.Core.Services.IMemberService MemberService
 @inject Umbraco.Cms.Core.Services.IMediaService MediaService
+@using Teknikern.Controllers
 @using Umbraco.Cms.Core.Models
 @using Umbraco.Cms.Web.Common.Models
 @using Umbraco.Cms.Web.Website.Controllers
@@ -64,10 +65,22 @@
 					<img src="@defaultAvatar!.Url()" alt="Profile picture"
 							 style="width: 150px; height: 150px; object-fit: cover; border-radius:50%;" />
 				}
-				<div
-					style="width: 32px; height: 32px; background: black; border-radius:50%; position: absolute; bottom: 5px; right: 5px; border: solid 1px white;">
-					<p style="margin: 0; font-size: 24px; text-align: center;">&#x1F58A;</p>
-				</div>
+				
+				@using (Html.BeginUmbracoForm<MemberProfileController>(
+						"UploadProfilePicture",
+						FormMethod.Post,
+						new { enctype = "multipart/form-data" }))
+				{
+					<label for="profilePicture" style="cursor:pointer; display:block;">
+						<div class="light-link" style="width: 32px; height: 32px; background: black; border-radius: 50%; position: absolute; bottom: 5px; right: 5px; border: solid 1px white; display: flex;
+							align-items: center; justify-content: center; color: white;">&#x1F58A;
+						</div>
+					</label>
+
+					<input type="file" id="profilePicture" name="profilePicture" accept="image/jpeg,image/png,image/webp"
+								 style="display:none;" onchange="this.form.submit();" />
+				}
+
 			</section>
 			<section style=" margin:20px;">
 				<p><strong>@memberName</strong></p>
