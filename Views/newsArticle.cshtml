@@ -17,14 +17,14 @@
 
 @if (subjects.Any())
 {
-	<div class="news-card__tags" style="margin-bottom: 20px; margin-top: 5%; width: 30%; margin-left: 25%">
+	<div class="news-card__tags article-tags" style="margin-bottom: 20px; margin-top: 5%; width: 30%; margin-left: 25%">
 		@foreach (var subject in subjects)
 		{
 			<span class="tag">@(subject.Value<string>("subject"))</span>
 		}
 	</div>
 }
-<h1 style="margin-bottom: 40px; width: 50%; margin-left: 25%">@Model.Name
+<h1 class="article-title" style="margin-bottom: 40px; width: 50%; margin-left: 25%">@Model.Name
 	<span class="news-card__author" style="margin-top: 20px;">
 		@{
 			foreach (var author in authors)
@@ -88,7 +88,7 @@
 				<!-- Fylls automatiskt -->
 
 				<div style="margin-bottom: 5px;">
-					<textarea name="Content" rows="5" required
+					<textarea class="comment-textarea" name="Content" rows="5" required
 										style="width: 50vw; resize: none; padding: 20px; font-size: 16px; border-radius: 4px;"></textarea>
 				</div>
 
