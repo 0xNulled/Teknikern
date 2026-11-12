@@ -158,6 +158,11 @@ body {
         text-transform: uppercase;
         letter-spacing: 0.1rem;
         cursor: pointer;
+
+        &:focus-visible {
+            outline: none;
+            border: 4px solid #ffffff;
+        }
     }
 
     .primary-btn:hover {
@@ -176,6 +181,11 @@ body {
         text-transform: uppercase;
         letter-spacing: 0.1rem;
         cursor: pointer;
+
+        &:focus-visible {
+            outline: none;
+            border: 4px solid #ffffff;
+        }
     }
 
     .outline-btn:hover {
