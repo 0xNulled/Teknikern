@@ -42,6 +42,7 @@ namespace Teknikern.Controllers
       newComment.SetValue("commentContent", model.Content);
       newComment.SetValue("commentId", model.Id);
       newComment.SetValue("commentDate", model.Date);
+      newComment.SetValue("commentAuthorEmail", model.AuthorEmail);
 
       var saveResult = _contentService.Save(newComment);
 

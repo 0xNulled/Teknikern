@@ -1,0 +1,40 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    Layout = "~/Views/Master.cshtml";
+
+    const int MAX_ARTICLES = 8;
+
+    var articles = Model.Children()
+        .Where(c => c.ContentType.Alias == "newsArticle")
+        .OrderByDescending(c => c.CreateDate)
+        .ToList();
+
+    var siteSettings = Umbraco.ContentAtRoot()
+        .FirstOrDefault(x => x.ContentType.Alias == "siteSettings");
+
+    var promoText = siteSettings?.Value<string>("promoText");
+}
+<div class="featured-article">
+    @if (articles.Count > 0)
+    {
+        var randomArticle = Random.Shared.Next(articles.Count);
+
+        @await Html.PartialAsync("featuredArticle", articles[randomArticle])
+    }
+</div>
+<div class="promo-box"
+     style="background-color:white; color: black; min-height: 300px; clip-path: polygon(0 40px, 100% 0, 100% 250px, 0 100%); display: flex; align-items: center; flex-direction: column; justify-content: center;">
+    <p style="font-weight: 800; text-align: center; max-width:500px; letter-spacing: 0.1rem;">
+        @promoText
+    </p>
+    <a href="/om-oss" class="dark-link" style="letter-spacing: 0.3rem;">LÄS MER</a>
+</div>
+
+<div class="news-list" style="max-width: 1400px; margin-left: auto; margin-right: auto;">
+    @for (var i = 0; i < Math.Min(MAX_ARTICLES, articles.Count); i++)
+    {
+        <div class="news-list__item">
+            @await Html.PartialAsync("newsThumbnail", articles[i])
+        </div>
+    }
+</div>
