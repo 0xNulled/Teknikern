@@ -31,7 +31,7 @@
 <script
 src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
 
-<div style="display: flex; justify-content: center; align-items: center; min-height: 70vh; flex-direction: column">
+<div style="display: flex; justify-content: center; align-items: center; min-height: 70vh; flex-direction: column; padding: 20px 16px; box-sizing: border-box">
 	<h1 style="letter-spacing: 0.25rem; font-weight: 100; margin-bottom: 20px;">SKAPA KONTO</h1>
 
 	@if (success)
@@ -41,7 +41,7 @@ src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11
 	else
 	{
 		<div
-			style="display: flex; flex-direction: column; width: 400px; border: 1px solid white; padding: 20px 20px 10px 20px;">
+			style="display: flex; flex-direction: column; width: 100%; max-width: 400px; box-sizing: border-box; border: 1px solid white; padding: 20px 20px 10px 20px;">
 			@using (Html.BeginUmbracoForm<UmbRegisterController>(
 						"HandleRegisterMember",
 						new

@@ -1,4 +1,4 @@
-@using "@fontsource/maple-mono";
+﻿@using "@fontsource/maple-mono";
 
 $background-color: #000;
 $text-color: #fff;
@@ -59,7 +59,7 @@ body {
 
     .news-list {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
         gap: 25px;
         margin: 25px;
     }
@@ -194,5 +194,54 @@ body {
 
     .outline-btn[aria-pressed="true"] {
         background-color: $dark-accent-color
+    }
+
+    .auth-buttons {
+        flex-direction: row;
+    }
+
+    @media screen and (min-width: 768px) {
+        .auth-buttons {
+            flex-direction: column;
+        }
+    }
+}
+// Hoppa till huvudinnehåll (tillgänglighet)
+.skip-link {
+    position: absolute;
+    left: 8px;
+    top: -60px;
+    z-index: 1000;
+    background: $accent-color;
+    color: #000;
+    padding: 10px 16px;
+    font-weight: 900;
+    text-decoration: none;
+
+    &:focus {
+        top: 8px;
+    }
+}
+
+// Responsiv layout (mobil/surfplatta)
+@media screen and (max-width: 768px) {
+    body .news-article {
+        margin-left: 0;
+        width: auto;
+        padding: 15px 20px;
+    }
+
+    // !important behövs eftersom vyerna har inline-styles
+    .article-tags,
+    .article-title,
+    .comments-section {
+        width: auto !important;
+        margin-left: 20px !important;
+        margin-right: 20px !important;
+    }
+
+    .comment-textarea {
+        width: calc(100vw - 40px) !important;
+        box-sizing: border-box;
     }
 }

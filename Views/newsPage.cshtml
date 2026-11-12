@@ -1,33 +1,35 @@
-﻿@using Humanizer
+﻿@using Umbraco.Cms.Core.Models.PublishedContent
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
 @{
-    Layout = "~/Views/Master.cshtml";
+	Layout = "~/Views/Master.cshtml";
 
-    var articles = Model.Children()
-        .Where(c => c.ContentType.Alias == "newsArticle")
-        .OrderByDescending(c => c.CreateDate)
-        .ToList();
+	var nyheter = Umbraco.Content(Guid.Parse("eacaa63c-4ca1-4b6e-8bec-456daeee5bb1"));
 
-    var siteSettings = Umbraco.ContentAtRoot()
-        .FirstOrDefault(x => x.ContentType.Alias == "siteSettings");
+	var tagFolder = nyheter?.Children().FirstOrDefault(x => x.Name == "Nyhetsämnen Mapp");
+	var tags = tagFolder?.Children().ToList() ?? new List<IPublishedContent>();
 
-    var promoText = siteSettings?.Value<string>("promoText");
+	var listingUrl = Context.Request.Path.ToString();
+	var selectedTag = Context.Request.Query["tag"].FirstOrDefault();
 }
-<div class="featured-article">
-    @{
-        Random randomNumber = new Random();
-        int randomArticle = randomNumber.Next(0, articles.Count);
-    }
 
-    @await Html.PartialAsync("featuredArticle", articles[randomArticle])
+<section class="articles">
+	<div class="category_title"
+			 style="margin-top: 20px; display:flex; gap: 10px; justify-items: center; justify-content: center;">
+		<a class="outline-btn" href="@listingUrl" aria-pressed="@(string.IsNullOrEmpty(selectedTag) ? "true" : "false")"
+			 style="text-decoration: none;">Alla</a>
+		@foreach (var tag in tags)
+		{
+			var tagKey = tag.Key.ToString("N");
 
-</div>
-<div class="promo-box"
-     style="background-color:white; color: black;  min-height: 300px; clip-path: polygon(0 90px, 100% 0, 100% 200px, 0 100%); display: flex; align-items: center; flex-direction: column; justify-content: center;">
-    <p style="font-weight: 800; text-align: center; width:500px; letter-spacing: 0.1rem;">
-        @promoText
-    </p>
-    <a href="/om-oss" class="dark-link" style="letter-spacing: 0.3rem;">LÄS MER</a>
-</div>
+			<a class="outline-btn" href="@(listingUrl)?tag=@tagKey" aria-pressed="@(selectedTag == tagKey ? "true" : "false")"
+				 style="text-decoration: none;">
+				@(tag.Value<string>("subject") ?? tag.Name)
+			</a>
+		}
+	</div>
 
-@await Html.PartialAsync("~/Views/Partials/newsListPartial.cshtml", Model)
+	@if (nyheter != null)
+	{
+		@await Html.PartialAsync("newsListPartial", nyheter)
+	}
+</section>
